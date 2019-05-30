@@ -1,0 +1,28 @@
+package org.tenkichannel.umbrella.carry.process;
+
+import org.tenkichannel.umbrella.carry.process.Weather;
+import org.tenkichannel.umbrella.carry.process.Result;
+
+rule "when it's raining, we should bring an umbrella"
+ruleflow-group "carry-umbrella-decision"
+no-loop 
+
+    when
+        $w : Weather ( condition == "Rain" )
+        $r : Result ( )
+    then
+        $r.setCarryUmbrella(true);
+  
+end
+
+rule "when the condition it's not raining, forget about carrying an umbrella!"
+ruleflow-group "carry-umbrella-decision"
+no-loop 
+
+    when
+        $w : Weather ( condition != "Rain" )
+        $r : Result ( )
+    then
+        $r.setCarryUmbrella(false);
+  
+end
