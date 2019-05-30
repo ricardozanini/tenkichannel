@@ -16,7 +16,7 @@ mvn clean package quarkus:dev -Dquarkus.http.port=8181
 
 The `-Dquarkus.http.port=8181` option is optional, but will help if you are running the jBPM Designer on the the default `8080` port.
 
-Make calls to the API to start the process like this:
+Make calls to the API to start the process:
 
 ```shell
 curl -X POST -H "Content-Type: application/json" --data '{"location": {"city" : "Seattle,WA"}}' http://localhost:8181/umbrellaCarryDecisionProcess
