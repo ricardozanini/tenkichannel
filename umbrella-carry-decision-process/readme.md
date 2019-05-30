@@ -1,12 +1,12 @@
 # Umbrella Carry Decision Process :umbrella:
 
-A sample process using [Kogito JBPM and Drools Runtimes](https://github.com/kiegroup/kogito-runtimes) to help you decide if it's worth carry an umbrella with you today based on your location's weather forecast.
+A sample process using [Kogito JBPM and Drools Runtimes](https://github.com/kiegroup/kogito-runtimes) to help you decide if it's worth carry an umbrella with you based on your location's weather forecast.
 
 ## How to use
 
-1) Read the [Kogito examples](https://github.com/kiegroup/kogito-examples).
+Read the [Kogito examples](https://github.com/kiegroup/kogito-examples).
 
-2) Run the following commands in your terminal to have the application started:
+Run the following commands in your terminal to have the application started:
 
 ```shell
 git clone https://github.com/ricardozanini/tenkichannel.git
@@ -16,15 +16,15 @@ mvn clean package quarkus:dev -Dquarkus.http.port=8181
 
 The `-Dquarkus.http.port=8181` option is optional, but will help if you are running the jBPM Designer on the the default `8080` port.
 
-3) Make calls to the API to start the process like this:
+Make calls to the API to start the process like this:
 
 ```shell
-curl -X --data "{'location': {'city' : 'Seattle,WA'}}" http://localhost:8181/umbrellaCarryDecisionProcess
+curl -X POST -H "Content-Type: application/json" --data '{"location": {"city" : "Seattle,WA"}}' http://localhost:8181/umbrellaCarryDecisionProcess
 ```
 
-4) You should receive a response like this one:
+You should receive a response like this one:
 
-```shell
+```json
 {
     "id": 1,
     "location": {
