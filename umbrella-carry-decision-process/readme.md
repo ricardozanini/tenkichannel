@@ -1,6 +1,6 @@
 # Umbrella Carry Decision Process :umbrella:
 
-A sample process using [Kogito JBPM and Drools Runtimes](https://github.com/kiegroup/kogito-runtimes) to help you decide if it's worth carry an umbrella with you based on your location's weather forecast.
+A sample process using [Kogito JBPM and Drools Runtimes](https://github.com/kiegroup/kogito-runtimes) to help you decide if it's worth carrying an umbrella based on your location's weather forecast.
 
 ## How to use
 
@@ -38,5 +38,4 @@ You should receive a response like this one:
     }
 }
 ```
-
-Yes, please bring an umbrella with you because it's gonna rain :umbrella:.
+And if you live in [Seattle](https://en.wikipedia.org/wiki/Seattle), bring an umbrella with you because it's gonna rain :umbrella:.
