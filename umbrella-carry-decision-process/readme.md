@@ -10,7 +10,7 @@ Run the following commands in your terminal to have the application started:
 
 ```shell
 git clone https://github.com/ricardozanini/tenkichannel.git
-cd umbrella-carry-decision-process
+cd tenkichannel/umbrella-carry-decision-process
 mvn clean package quarkus:dev -Dquarkus.http.port=8181
 ```
 
