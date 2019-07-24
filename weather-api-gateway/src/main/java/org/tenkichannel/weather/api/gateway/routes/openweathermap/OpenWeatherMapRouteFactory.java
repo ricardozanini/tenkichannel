@@ -34,6 +34,9 @@ public class OpenWeatherMapRouteFactory {
     QueryRequestProcessor queryRequestProcessor;
 
     @Inject
+    CurrentResponseProcessor currentResponseProcessor;
+
+    @Inject
     OpenWeatherDataConfig config;
 
     @Inject
@@ -47,7 +50,9 @@ public class OpenWeatherMapRouteFactory {
             this.camelContext.start();
         }
         // tls configuration
-        this.configureDefaultSslContextParameters();
+        if (this.config.isSecureProtocol()) {
+            this.configureDefaultSslContextParameters();
+        }
         // routes
         this.camelContext.addRoutes(this.createOpenWeatherMapRoute());
         ((FastCamelContext) this.camelContext).reifyRoutes();
@@ -107,7 +112,9 @@ public class OpenWeatherMapRouteFactory {
                     .log(LoggingLevel.DEBUG, "Headers defined: ${in.headers}")
                     .setBody(constant(null)) //GET request doesn't have a body
                     .doTry()
-                        .toF("netty4-http:%s%s?ssl=true", config.getBaseUri(), OpenWeatherDataConfig.OPEN_WEATHER_MAP_WEATHER_PATH)
+                        .toF("netty4-http:%s%s?ssl=%s", config.getBaseUri(), OpenWeatherDataConfig.OPEN_WEATHER_MAP_WEATHER_PATH, config.isSecureProtocol())
+                        .convertBodyTo(String.class, "UTF-8")
+                        .process(currentResponseProcessor)
                     .doCatch(CamelException.class)
                         .log("Impossible to send message to external Weather API: ${body}")
                         .setBody(constant("{ 'error' : 'true' }"))

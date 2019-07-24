@@ -11,7 +11,7 @@ public class OpenWeatherDataConfig {
 
     @ConfigProperty(name = OpenWeatherDataProperties.OPEN_WEATHER_MAP_BASE_URI)
     private String baseUri;
-    
+
     @ConfigProperty(name = OpenWeatherDataProperties.OPEN_WEATHER_MAP_API_KEY)
     private String apiKey;
 
@@ -31,6 +31,10 @@ public class OpenWeatherDataConfig {
 
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    public boolean isSecureProtocol() {
+        return "https".contains(baseUri);
     }
 
 }

@@ -47,10 +47,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-jsonb</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-api</artifactId>
     </dependency>
@@ -75,8 +71,8 @@
       <artifactId>jbpm-flow</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.swagger</groupId>
-      <artifactId>swagger-annotations</artifactId>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-cloud-workitems</artifactId>
     </dependency>
   </dependencies>
   <build>
@@ -98,30 +94,25 @@
         <extensions>true</extensions>
       </plugin>
       <plugin>
-        <groupId>com.github.kongchen</groupId>
+        <groupId>io.openapitools.swagger</groupId>
         <artifactId>swagger-maven-plugin</artifactId>
         <configuration>
-          <apiSources>
-            <apiSource>
-              <springmvc>false</springmvc>
-              <locations>
-                <location>org.tenkichannel.umbrella.carry.process</location>
-              </locations>
-              <schemes>http,https</schemes>
-              <info>
-                <title>${project.description}</title>
-                <version>${project.version}</version>
-              </info>
-              <outputPath>${basedir}/target/classes/META-INF/resources/docs/</outputPath>
-              <outputFormats>json,yaml</outputFormats>
-              <swaggerDirectory>${basedir}/target/classes/META-INF/resources/docs/</swaggerDirectory>
-              <swaggerFileName>swagger</swaggerFileName>
-            </apiSource>
-          </apiSources>
+          <resourcePackages>
+            <resourcePackage>org.tenkichannel.umbrella.carry.process</resourcePackage>
+          </resourcePackages>
+          <outputDirectory>${basedir}/target/classes/META-INF/resources/docs/</outputDirectory>
+          <outputFilename>swagger</outputFilename>
+          <outputFormats>JSON,YAML</outputFormats>
+          <prettyPrint>true</prettyPrint>
+          <swaggerConfig>
+            <info>
+              <title>${project.description}</title>
+              <version>${project.version}</version>
+            </info>
+          </swaggerConfig>
         </configuration>
         <executions>
           <execution>
-            <phase>compile</phase>
             <goals>
               <goal>generate</goal>
             </goals>
@@ -147,6 +138,20 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>native-image</goal>
+                </goals>
+                <configuration>
+                  <enableHttpUrlHandler>true</enableHttpUrlHandler>
+                  <enableHttpsUrlHandler>true</enableHttpsUrlHandler>
+                  <enableJni>true</enableJni>
+                  <enableAllSecurityServices>true</enableAllSecurityServices>
+                  <additionalBuildArgs>-H:ReflectionConfigurationFiles=../reflection.json</additionalBuildArgs>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
