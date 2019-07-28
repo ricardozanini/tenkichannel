@@ -28,7 +28,7 @@ public class OpenWeatherMapRouteTest {
     }
 
     @Test
-    public void whenQueryWeatherByCityName() throws IOException {
+    public void whenQueryWeatherByCityId() throws IOException {
         try (final MockWebServer server = new MockWebServer()) {
             server.enqueue(new MockResponse().setBody(readResource("/mock-responses/openweathermap/current.json")));
             server.start(9090);
