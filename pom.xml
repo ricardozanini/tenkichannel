@@ -10,8 +10,8 @@
   <description>BOM Project for Tenki Channel Java Projects</description>
 
   <modules>
-    <module>umbrella-carry-decision-process</module>
     <module>weather-api-gateway</module>
+    <module>rain-forecast-process</module>
   </modules>
 
   <properties>
@@ -20,11 +20,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- deps -->
     <version.org.kie.kogito>8.0.0-SNAPSHOT</version.org.kie.kogito>
-    <version.io.quarkus>0.18.0</version.io.quarkus>
+    <version.io.quarkus>0.21.2</version.io.quarkus>
     <version.com.squareup.okhttp3>4.0.1</version.com.squareup.okhttp3>
     <!-- plugins -->
     <version.maven.failsafe.plugin>3.0.0-M3</version.maven.failsafe.plugin>
-    <version.swagger.maven.plugin>3.1.8</version.swagger.maven.plugin>
+    <version.swagger.maven.plugin>2.1.0</version.swagger.maven.plugin>
     <version.surefire.plugin>3.0.0-M3</version.surefire.plugin>
   </properties>
 
@@ -95,7 +95,7 @@
           <version>${version.maven.failsafe.plugin}</version>
         </plugin>
         <plugin>
-          <groupId>com.github.kongchen</groupId>
+          <groupId>io.openapitools.swagger</groupId>
           <artifactId>swagger-maven-plugin</artifactId>
           <version>${version.swagger.maven.plugin}</version>
         </plugin>
