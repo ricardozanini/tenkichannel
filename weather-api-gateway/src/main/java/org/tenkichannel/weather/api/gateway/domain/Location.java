@@ -6,6 +6,7 @@ import java.util.Objects;
 /**
  * Domain model for requesting weather data.
  */
+
 public class Location implements Serializable {
 
     private static final long serialVersionUID = 2072056895286744369L;
@@ -93,6 +94,6 @@ public class Location implements Serializable {
             return false;
         Location other = (Location) obj;
         return Objects.equals(city, other.city) && Objects.equals(cityId, other.cityId) && Objects.equals(countryCode, other.countryCode) && Objects.equals(latitude, other.latitude) && Objects.equals(longitude,
-                                                                                                                                                                                                        other.longitude);
+                other.longitude);
     }
 }
