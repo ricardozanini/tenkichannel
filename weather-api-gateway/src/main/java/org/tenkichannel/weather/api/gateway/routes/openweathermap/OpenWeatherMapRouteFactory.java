@@ -1,31 +1,29 @@
 package org.tenkichannel.weather.api.gateway.routes.openweathermap;
 
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-
-import io.quarkus.camel.core.runtime.support.FastCamelContext;
+import io.quarkus.runtime.ShutdownEvent;
+import io.quarkus.runtime.StartupEvent;
 import org.apache.camel.CamelContext;
-import org.apache.camel.CamelException;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.SSLContextParametersAware;
 import org.apache.camel.ServiceStatus;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.quarkus.core.runtime.support.FastCamelContext;
 import org.apache.camel.support.jsse.SSLContextParameters;
 import org.apache.camel.support.jsse.TrustManagersParameters;
 
-@Singleton
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+
+@ApplicationScoped
 public class OpenWeatherMapRouteFactory {
 
     public static final String ROUTE_CURRENT_WEATHER_DATA = "direct:getCurrentWeatherData";
@@ -42,10 +40,11 @@ public class OpenWeatherMapRouteFactory {
     @Inject
     CamelContext camelContext;
 
+    @Inject
     ProducerTemplate producerTemplate;
 
-    @PostConstruct
-    public void createRoutes() throws Exception {
+
+    void onStart(@Observes StartupEvent ev) throws Exception {
         if (this.camelContext.getStatus() != ServiceStatus.Started) {
             this.camelContext.start();
         }
@@ -55,29 +54,26 @@ public class OpenWeatherMapRouteFactory {
         }
         // routes
         this.camelContext.addRoutes(this.createOpenWeatherMapRoute());
-        ((FastCamelContext) this.camelContext).reifyRoutes();
+        ((FastCamelContext) this.camelContext).doInit();
+
         // clients
         this.producerTemplate = this.camelContext.createProducerTemplate();
     }
 
-    @PreDestroy
-    public void cleanUp() throws Exception {
+    void onStop(@Observes ShutdownEvent ev) {
         if (this.producerTemplate != null) {
             this.producerTemplate.stop();
         }
     }
 
-    @Produces
-    public ProducerTemplate getProducerTemplate() {
-        return this.producerTemplate;
-    }
 
     /**
      * Add the default TrustStore to the CamelContext
-     * @see <a href="https://livebook.manning.com/#!/book/camel-in-action-second-edition/chapter-14/220">Defining global SSL configuration</a>
+     *
      * @return
      * @throws NoSuchAlgorithmException
      * @throws KeyStoreException
+     * @see <a href="https://livebook.manning.com/#!/book/camel-in-action-second-edition/chapter-14/220">Defining global SSL configuration</a>
      */
     private void configureDefaultSslContextParameters() throws NoSuchAlgorithmException, KeyStoreException {
         final SSLContextParameters sslContextParameters = new SSLContextParameters();
@@ -106,20 +102,20 @@ public class OpenWeatherMapRouteFactory {
             public void configure() throws Exception {
                 // @formatter:off
                 from(ROUTE_CURRENT_WEATHER_DATA)
-                    .log(LoggingLevel.DEBUG, "Trying to connect to the OpenWeatherMap to get current weather data")
-                    .setHeader(Exchange.HTTP_METHOD, constant("GET"))
-                    .process(queryRequestProcessor)
-                    .log(LoggingLevel.DEBUG, "Headers defined: ${in.headers}")
-                    .setBody(constant(null)) //GET request doesn't have a body
-                    .doTry()
+                        .log(LoggingLevel.INFO, "Trying to connect to the OpenWeatherMap to get current weather data")
+                        .setHeader(Exchange.HTTP_METHOD, constant("GET"))
+                        .process(queryRequestProcessor)
+                        .log(LoggingLevel.INFO, "Headers defined: ${in.headers}")
+                        .setBody(constant(null)) //GET request doesn't have a body
+                        .doTry()
                         .toF("netty4-http:%s%s?ssl=%s", config.getBaseUri(), OpenWeatherDataConfig.OPEN_WEATHER_MAP_WEATHER_PATH, config.isSecureProtocol())
                         .convertBodyTo(String.class, "UTF-8")
                         .process(currentResponseProcessor)
-                    .doCatch(CamelException.class)
+                        .doCatch(Exception.class)
                         .log("Impossible to send message to external Weather API: ${body}")
-                        .setBody(constant("{ 'error' : 'true' }"))
-                    .endDoTry()
-                    .log(LoggingLevel.DEBUG, "Body response from API call ${body}");
+                        //.setBody(constant("{ 'error' : 'true' }"))
+                        .endDoTry()
+                        .log(LoggingLevel.DEBUG, "Body response from API call ${body}");
                 // @formatter:on
             }
         };

@@ -7,13 +7,13 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @ApplicationScoped
 public class OpenWeatherDataConfig {
 
-    public static final String OPEN_WEATHER_MAP_WEATHER_PATH = "/weather";
+    public static final String OPEN_WEATHER_MAP_WEATHER_PATH = "/data/2.5/forecast?";
 
     @ConfigProperty(name = OpenWeatherDataProperties.OPEN_WEATHER_MAP_BASE_URI)
-    private String baseUri;
+    String baseUri;
 
     @ConfigProperty(name = OpenWeatherDataProperties.OPEN_WEATHER_MAP_API_KEY)
-    private String apiKey;
+    String apiKey;
 
     public OpenWeatherDataConfig() {}
 

@@ -4,12 +4,12 @@ import javax.enterprise.context.ApplicationScoped;
 
 import io.quarkus.test.Mock;
 
-@ApplicationScoped
-@Mock
-public class MockOpenWeatherMapRouteFactory extends OpenWeatherMapRouteFactory {
-
-    public MockOpenWeatherMapRouteFactory() {
-
-    }
-
-}
+//@ApplicationScoped
+//@Mock
+//public class MockOpenWeatherMapRouteFactory extends OpenWeatherMapRouteFactory {
+//
+//    public MockOpenWeatherMapRouteFactory() {
+//
+//    }
+//
+//}

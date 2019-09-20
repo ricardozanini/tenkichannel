@@ -25,7 +25,7 @@ public class CurrentResponseProcessor implements Processor {
     }
 
     @Override
-    public void process(Exchange exchange) throws Exception {
+    public void process(Exchange exchange) {
         final String weatherDataJson = exchange.getIn().getBody(String.class);
         final Current current = jsonb.fromJson(weatherDataJson, Current.class);
         final Weather weather = new Weather();
