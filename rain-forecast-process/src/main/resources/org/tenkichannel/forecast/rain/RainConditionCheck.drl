@@ -4,7 +4,6 @@ import org.tenkichannel.forecast.rain.Weather;
 import org.tenkichannel.forecast.rain.Result;
 
 rule "if condition is Rain, set object accordingly"
-ruleflow-group "rainConditionCheck"
 no-loop 
     when
         $w : Weather ( condition == "Rain" )
@@ -16,7 +15,6 @@ no-loop
 end
 
 rule "if condition is not Rain, set object accordingly"
-ruleflow-group "rainConditionCheck"
 no-loop 
     when
         $w : Weather ( condition != "Rain" )

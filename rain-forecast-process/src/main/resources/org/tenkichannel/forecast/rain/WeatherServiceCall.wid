@@ -1,0 +1,11 @@
+[
+   [
+    "name" : "WeatherServiceCall", 
+    "parameters" : [ 
+        "Namespace" : new StringDataType(),
+        "Model" : new StringDataType()
+    ],
+    "displayName" : "Weather Service Call", 
+    "icon" : "ServiceTask.png" 
+  ]
+]
