@@ -5,27 +5,27 @@ public class Result implements java.io.Serializable {
 
 	static final long serialVersionUID = 1L;
 
-	private java.lang.Boolean isRain;
+	private java.lang.Boolean rain;
 
 	public Result() {
-	    this.isRain = false;
+	    this.rain = false;
 	}
 
-	public java.lang.Boolean getIsRain() {
-		return this.isRain;
+	public java.lang.Boolean isRain() {
+		return this.rain;
 	}
 
-	public void setIsRain(java.lang.Boolean isRain) {
-		this.isRain = isRain;
+	public void setRain(java.lang.Boolean isRain) {
+		this.rain = isRain;
 	}
 
 	public Result(java.lang.Boolean isRain) {
-		this.isRain = isRain;
+		this.rain = isRain;
 	}
 	
 	@Override
 	public String toString() {
-	    return isRain.toString();
+	    return rain.toString();
 	}
 
 	@Override
@@ -35,9 +35,9 @@ public class Result implements java.io.Serializable {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		Result that = (Result) o;
-		if (isRain != null
-				? !isRain.equals(that.isRain)
-				: that.isRain != null)
+		if (rain != null
+				? !rain.equals(that.rain)
+				: that.rain != null)
 			return false;
 		return true;
 	}
@@ -46,7 +46,7 @@ public class Result implements java.io.Serializable {
 	public int hashCode() {
 		int result = 17;
 		result = 31 * result
-				+ (isRain != null ? isRain.hashCode() : 0);
+				+ (rain != null ? rain.hashCode() : 0);
 		return result;
 	}
 

@@ -3,7 +3,7 @@
     "name" : "WeatherServiceCall", 
     "parameters" : [ 
         "Namespace" : new StringDataType(),
-        "Model" : new StringDataType()
+        "Service" : new StringDataType()
     ],
     "displayName" : "Weather Service Call", 
     "icon" : "ServiceTask.png" 

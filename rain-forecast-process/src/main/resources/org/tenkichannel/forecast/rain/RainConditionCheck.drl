@@ -10,7 +10,7 @@ no-loop
         $r : Result ( )
     then
         modify($r) {
-            setIsRain(true);
+            setRain(true);
         };
 end
 
@@ -21,6 +21,6 @@ no-loop
         $r : Result ( )
     then
         modify($r) {
-            setIsRain(true);
+            setRain(true);
         };
 end

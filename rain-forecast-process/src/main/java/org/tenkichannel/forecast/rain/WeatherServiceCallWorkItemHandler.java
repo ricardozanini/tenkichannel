@@ -20,7 +20,7 @@ public class WeatherServiceCallWorkItemHandler extends DiscoveredServiceWorkItem
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        Map<String, Object> results = discoverAndCall(workItem, System.getenv("NAMESPACE"), "weatherService",
+        Map<String, Object> results = discoverAndCall(workItem, System.getenv("NAMESPACE"), "Service",
                 HttpMethods.POST);
         manager.completeWorkItem(workItem.getId(), results);
     }
