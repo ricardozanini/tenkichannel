@@ -8,10 +8,14 @@ import javax.inject.Inject;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tenkichannel.weather.api.gateway.domain.Location;
 
 @ApplicationScoped
 public class QueryRequestProcessor implements Processor {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueryRequestProcessor.class);
 
     @Inject
     OpenWeatherDataConfig config;
@@ -19,14 +23,16 @@ public class QueryRequestProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
         final Location location = exchange.getIn().getBody(Location.class);
+        LOGGER.debug("Preparing to set input location into exchange: {}", location);
 
         // @formatter:off
         exchange.getIn().setHeader(
            Exchange.HTTP_QUERY, 
-           new StringBuilder(this.generateQuery(location))
+           new StringBuilder(this.generateAuthentication())
                                  .append("&")
-                                 .append(this.generateAuthentication()).toString());
+                                 .append(this.generateQuery(location)).toString());
         // @formatter:on
+        LOGGER.debug("Headers set to {}", exchange.getIn().getHeaders());
     }
 
     private String generateQuery(final Location location) throws UnsupportedEncodingException {
@@ -53,6 +59,6 @@ public class QueryRequestProcessor implements Processor {
     }
 
     private String generateAuthentication() throws UnsupportedEncodingException {
-        return new StringBuilder("appid=").append(URLEncoder.encode(config.getApiKey(), "UTF-8")).toString();
+        return new StringBuilder("APPID=").append(URLEncoder.encode(config.getApiKey(), "UTF-8")).toString();
     }
 }

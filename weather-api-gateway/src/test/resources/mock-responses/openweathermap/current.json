@@ -1,43 +1,43 @@
 {
-	"coord": {
-		"lon": -46.64,
-		"lat": -23.55
-	},
-	"weather": [
-		{
-			"id": 800,
-			"main": "Clear",
-			"description": "clear sky",
-			"icon": "01d"
-		}
-	],
-	"base": "stations",
-	"main": {
-		"temp": 299.17,
-		"pressure": 1021,
-		"humidity": 41,
-		"temp_min": 299.15,
-		"temp_max": 299.26
-	},
-	"visibility": 10000,
-	"wind": {
-		"speed": 2.1,
-		"deg": 270
-	},
-	"clouds": {
-		"all": 0
-	},
-	"dt": 1563998417,
-	"sys": {
-		"type": 1,
-		"id": 8394,
-		"message": 0.0142,
-		"country": "BR",
-		"sunrise": 1563961518,
-		"sunset": 1564000829
-	},
-	"timezone": -10800,
-	"id": 3448439,
-	"name": "Sao Paulo",
-	"cod": 200
+    "coord": {
+        "lon": -46.64,
+        "lat": -23.55
+    },
+    "weather": [
+        {
+            "id": 800,
+            "main": "Clear",
+            "description": "clear sky",
+            "icon": "01d"
+        }
+    ],
+    "base": "stations",
+    "main": {
+        "temp": 299.17,
+        "pressure": 1021,
+        "humidity": 41,
+        "temp_min": 299.15,
+        "temp_max": 299.26
+    },
+    "visibility": 10000,
+    "wind": {
+        "speed": 2.1,
+        "deg": 270
+    },
+    "clouds": {
+        "all": 0
+    },
+    "dt": 1563998417,
+    "sys": {
+        "type": 1,
+        "id": 8394,
+        "message": 0.0142,
+        "country": "BR",
+        "sunrise": 1563961518,
+        "sunset": 1564000829
+    },
+    "timezone": -10800,
+    "id": 3448439,
+    "name": "Sao Paulo",
+    "cod": 200
 }

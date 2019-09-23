@@ -8,7 +8,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.camel.ProducerTemplate;
+import org.apache.camel.quarkus.core.runtime.CamelRuntime;
 import org.tenkichannel.weather.api.gateway.domain.Location;
 import org.tenkichannel.weather.api.gateway.domain.Weather;
 import org.tenkichannel.weather.api.gateway.routes.openweathermap.OpenWeatherMapRouteFactory;
@@ -17,26 +17,26 @@ import org.tenkichannel.weather.api.gateway.routes.openweathermap.OpenWeatherMap
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class WeatherResource {
-
+    
     @Inject
-    ProducerTemplate producer;
+    CamelRuntime runtime;
 
     @GET
     @Path("/city/{id}")
     public Weather getWeatherCondition(@PathParam("id") int cityId) {
-        return producer.requestBody(OpenWeatherMapRouteFactory.ROUTE_CURRENT_WEATHER_DATA, new Location(cityId), Weather.class);
+        return runtime.getContext().createProducerTemplate().requestBody(OpenWeatherMapRouteFactory.ROUTE_CURRENT_WEATHER_DATA, new Location(cityId), Weather.class);
     }
 
     @GET
     @Path("/location/{city}")
     public Weather getWeatherCondition(@PathParam("city") String cityName) {
-        return producer.requestBody(OpenWeatherMapRouteFactory.ROUTE_CURRENT_WEATHER_DATA, new Location(cityName), Weather.class);
+        return runtime.getContext().createProducerTemplate().requestBody(OpenWeatherMapRouteFactory.ROUTE_CURRENT_WEATHER_DATA, new Location(cityName), Weather.class);
     }
 
     @GET
     @Path("/geo/{lat}/{log}")
     public Weather getWeatherCondition(@PathParam("lat") Double latitude, @PathParam("log") Double longitude) {
-        return producer.requestBody(OpenWeatherMapRouteFactory.ROUTE_CURRENT_WEATHER_DATA, new Location(latitude, longitude), Weather.class);
+        return runtime.getContext().createProducerTemplate().requestBody(OpenWeatherMapRouteFactory.ROUTE_CURRENT_WEATHER_DATA, new Location(latitude, longitude), Weather.class);
     }
 
 }

@@ -5,7 +5,7 @@ package org.tenkichannel.weather.api.gateway.routes.openweathermap.model;
 public class Main {
 
     private Double temp;
-    private Integer pressure;
+    private Double pressure;
     private Integer humidity;
     private Double tempMin;
     private Double tempMax;
@@ -18,11 +18,11 @@ public class Main {
         this.temp = temp;
     }
 
-    public Integer getPressure() {
+    public Double getPressure() {
         return pressure;
     }
 
-    public void setPressure(Integer pressure) {
+    public void setPressure(Double pressure) {
         this.pressure = pressure;
     }
 

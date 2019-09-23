@@ -36,7 +36,7 @@ public class OpenWeatherMapRouteTest {
                     .when().get("/city/2643743")
                     .then()
                     .statusCode(200)
-                    .body(containsString("condition"));
+                    .body(containsString("Clear"));
         }
     }
 
