@@ -74,8 +74,7 @@
       <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
       <bpmn2:script>System.out.println(&quot;Final result is &quot; + location + &quot; &quot; + weather + &quot; &quot; + result);
 
-kcontext.setVariable(&quot;weather&quot;, null);
-kcontext.setVariable(&quot;location&quot;, null);</bpmn2:script>
+kcontext.setVariable(&quot;weather&quot;, null);</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" sourceRef="BusinessRuleTask_1" targetRef="ScriptTask_2"/>
     <bpmn2:endEvent id="EndEvent_1" name="End Process">
@@ -106,6 +105,7 @@ kcontext.setVariable(&quot;location&quot;, null);</bpmn2:script>
         <bpmn2:dataInput id="DataInput_9" itemSubjectRef="ItemDefinition_1" name="Namespace"/>
         <bpmn2:dataInput id="DataInput_10" itemSubjectRef="ItemDefinition_2" name="Service"/>
         <bpmn2:dataOutput id="DataOutput_1" itemSubjectRef="ItemDefinition_153" name="weather"/>
+        <bpmn2:dataOutput id="DataOutput_2" itemSubjectRef="ItemDefinition_82" name="result"/>
         <bpmn2:inputSet id="_InputSet_2">
           <bpmn2:dataInputRefs>DataInput_1</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>DataInput_4</bpmn2:dataInputRefs>
@@ -118,6 +118,7 @@ kcontext.setVariable(&quot;location&quot;, null);</bpmn2:script>
         </bpmn2:inputSet>
         <bpmn2:outputSet id="OutputSet_1" name="Output Set 1">
           <bpmn2:dataOutputRefs>DataOutput_1</bpmn2:dataOutputRefs>
+          <bpmn2:dataOutputRefs>DataOutput_2</bpmn2:dataOutputRefs>
         </bpmn2:outputSet>
       </bpmn2:ioSpecification>
       <bpmn2:dataInputAssociation id="_DataInputAssociation_2">
@@ -172,6 +173,10 @@ kcontext.setVariable(&quot;location&quot;, null);</bpmn2:script>
       <bpmn2:dataOutputAssociation id="DataOutputAssociation_1">
         <bpmn2:sourceRef>DataOutput_1</bpmn2:sourceRef>
         <bpmn2:targetRef>weather</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+      <bpmn2:dataOutputAssociation id="DataOutputAssociation_2">
+        <bpmn2:sourceRef>DataOutput_2</bpmn2:sourceRef>
+        <bpmn2:targetRef>result</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
     </bpmn2:task>
     <bpmn2:sequenceFlow id="SequenceFlow_6" tns:priority="1" sourceRef="ScriptTask_1" targetRef="Task_1"/>

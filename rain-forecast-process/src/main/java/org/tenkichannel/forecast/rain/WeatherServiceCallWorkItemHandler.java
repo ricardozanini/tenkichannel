@@ -22,6 +22,10 @@ public class WeatherServiceCallWorkItemHandler extends DiscoveredServiceWorkItem
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         Map<String, Object> results = discoverAndCall(workItem, System.getenv("NAMESPACE"), "Service",
                 HttpMethods.POST);
+        // produce the expected objects to be validated by the next nodes
+        results.put("result", new Result());
+        results.put("weather", new Weather(results.get("condition").toString()));
+        // return
         manager.completeWorkItem(workItem.getId(), results);
     }
 

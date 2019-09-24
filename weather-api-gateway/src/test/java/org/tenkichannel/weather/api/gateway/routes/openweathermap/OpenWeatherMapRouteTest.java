@@ -31,7 +31,6 @@ public class OpenWeatherMapRouteTest {
         try (final MockWebServer server = new MockWebServer()) {
             server.enqueue(new MockResponse().setBody(readResource("/mock-responses/openweathermap/current.json")));
             server.start(9090);
-
             given()
                     .when().get("/city/2643743")
                     .then()
