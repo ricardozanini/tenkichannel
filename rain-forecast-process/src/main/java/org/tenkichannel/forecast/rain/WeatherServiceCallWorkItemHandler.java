@@ -14,7 +14,7 @@ public class WeatherServiceCallWorkItemHandler extends DiscoveredServiceWorkItem
 
     public WeatherServiceCallWorkItemHandler() {
         if ("true".equalsIgnoreCase(System.getProperty("local"))) {
-            this.addServices("weatherService", new ServiceInfo("http://localhost:8081/weather", null));
+            this.addServices("weatherService", new ServiceInfo("http://localhost:8081/forecast", null));
         }
     }
 

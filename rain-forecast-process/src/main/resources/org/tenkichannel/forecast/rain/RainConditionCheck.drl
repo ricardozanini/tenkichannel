@@ -21,6 +21,6 @@ no-loop
         $r : Result ( )
     then
         modify($r) {
-            setRain(true);
+            setRain(false);
         };
 end

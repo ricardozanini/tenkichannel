@@ -18,7 +18,9 @@ public class Location implements Serializable {
     private Double longitude;
 
     public Location() {
-
+        this.cityId = 0;
+        this.latitude = 0.0;
+        this.longitude = 0.0;
     }
 
     public Location(int cityId) {
@@ -94,6 +96,12 @@ public class Location implements Serializable {
             return false;
         Location other = (Location) obj;
         return Objects.equals(city, other.city) && Objects.equals(cityId, other.cityId) && Objects.equals(countryCode, other.countryCode) && Objects.equals(latitude, other.latitude) && Objects.equals(longitude,
-                other.longitude);
+                                                                                                                                                                                                        other.longitude);
     }
+
+    @Override
+    public String toString() {
+        return "Location [city=" + city + ", countryCode=" + countryCode + ", cityId=" + cityId + ", latitude=" + latitude + ", longitude=" + longitude + "]";
+    }
+
 }

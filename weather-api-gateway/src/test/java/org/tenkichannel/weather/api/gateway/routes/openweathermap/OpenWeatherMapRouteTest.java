@@ -18,7 +18,7 @@ public class OpenWeatherMapRouteTest {
 
     @BeforeAll
     public static void setup() {
-        RestAssured.basePath = "/api/weather";
+        RestAssured.basePath = "/";
     }
 
     @AfterAll
@@ -32,7 +32,7 @@ public class OpenWeatherMapRouteTest {
             server.enqueue(new MockResponse().setBody(readResource("/mock-responses/openweathermap/current.json")));
             server.start(9090);
             given()
-                    .when().get("/city/2643743")
+                    .when().get("/api/weather/city/2643743")
                     .then()
                     .statusCode(200)
                     .body(containsString("Clear"));

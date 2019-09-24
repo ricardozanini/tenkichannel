@@ -4,14 +4,16 @@ A sample process using [Kogito Runtimes](https://github.com/kiegroup/kogito-runt
 
 ## How to use
 
-Read the [Kogito examples](https://github.com/kiegroup/kogito-examples).
+1. Read the [Kogito examples](https://github.com/kiegroup/kogito-examples) to get used with the Kogito project.
 
-Run the following commands in your terminal to have the application started:
+2. Have the [Weather API Gateway](../weather-api-gateway/README.MD) ready on port `8081` 
+
+3. Run the following commands in your terminal to have the application started:
 
 ```shell
 git clone https://github.com/ricardozanini/tenkichannel.git
 cd tenkichannel/rain-prediction-process
-mvn clean package quarkus:dev -Dlocal=true
+mvn clean package quarkus:dev -Dlocal=true -DskipTests
 ```
 
 Once the application is started, make calls to the API to start the process:
