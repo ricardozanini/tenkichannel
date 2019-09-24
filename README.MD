@@ -18,5 +18,5 @@ To make all this work, read the guides ([here](rain-forecast-process) and [here]
 
 ## TODO
 
-[ ] OpenShift/Kubernetes templates to deploy the services into the cloud 
-[ ] Deploy the Kogito service via Kogito CLI 
+[] OpenShift/Kubernetes templates to deploy the services into the cloud 
+[] Deploy the Kogito service via Kogito CLI 
