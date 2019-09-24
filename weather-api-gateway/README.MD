@@ -5,8 +5,7 @@
 Get an API Key at the [OpenWeather API web site](https://openweathermap.org/api) and run:
 
 ```bash
-# clone it
-$ git clone https://github.com/ricardozanini/tenkichannel.git
+# don't forget to clone me! git clone https://github.com/ricardozanini/tenkichannel.git
 $ cd tenkichannel
 # install all the bits
 $ mvn clean install

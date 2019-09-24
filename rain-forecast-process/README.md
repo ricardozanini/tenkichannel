@@ -11,7 +11,7 @@ A sample process using [Kogito Runtimes](https://github.com/kiegroup/kogito-runt
 3. Run the following commands in your terminal to have the application started:
 
 ```shell
-git clone https://github.com/ricardozanini/tenkichannel.git
+# have you cloned this repo? git clone https://github.com/ricardozanini/tenkichannel.git
 cd tenkichannel/rain-prediction-process
 mvn clean package quarkus:dev -Dlocal=true -DskipTests
 ```
@@ -36,4 +36,5 @@ You should receive a response like this one:
     }
 }
 ```
+
 And if you live in [Seattle](https://en.wikipedia.org/wiki/Seattle), bring an umbrella with you because it's gonna rain :umbrella:.
