@@ -1,5 +1,13 @@
 bin/
-/target
+/target/*.jar
+/target/generated*
+/target/lib
+/target/maven*
+/target/quarkus
+/target/*classes*
+/target/*reports*
+/target/test*
+/target/wiring*
 /local
 
 # Eclipse, Netbeans and IntelliJ files

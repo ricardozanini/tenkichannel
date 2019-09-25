@@ -61,6 +61,10 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-cloud-workitems</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>monitoring-prometheus-addon</artifactId>
+    </dependency>
     <!-- Included so swagger-ui is available in quarkus dev mode on http://localhost:8080/swagger-ui -->
     <dependency>
       <groupId>io.quarkus</groupId>
