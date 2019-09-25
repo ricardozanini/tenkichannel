@@ -30,6 +30,15 @@
     <version.surefire.plugin>3.0.0-M3</version.surefire.plugin>
   </properties>
 
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub ricardozanini Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/ricardozanini/tenkichannel</url>
+    </repository>
+  </distributionManagement>
+
+
   <repositories>
     <repository>
       <id>jboss-public-repository-group</id>
