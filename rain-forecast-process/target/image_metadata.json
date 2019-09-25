@@ -1,9 +1,5 @@
 {
   "labels" : [ {
-    "org.kie/rainforecast" : "process",
-    "prometheus.io/path" : "/metrics",
-    "prometheus.io/port" : "8080",
-    "prometheus.io/scheme" : "http",
-    "prometheus.io/scrape" : "true"
+    "org.kie/rainforecast" : "process"
   } ]
 }

@@ -38,7 +38,6 @@
     </repository>
   </distributionManagement>
 
-
   <repositories>
     <repository>
       <id>jboss-public-repository-group</id>

@@ -43,3 +43,4 @@ quarkus.log
 
 # XTF properties files
 test.properties
+/target/
