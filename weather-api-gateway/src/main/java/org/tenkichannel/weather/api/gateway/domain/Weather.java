@@ -3,7 +3,9 @@ package org.tenkichannel.weather.api.gateway.domain;
 import java.io.Serializable;
 import java.util.Objects;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 
+@RegisterForReflection
 public class Weather implements Serializable {
 
     private static final long serialVersionUID = -4564845012061865521L;

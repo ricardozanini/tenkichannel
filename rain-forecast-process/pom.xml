@@ -110,7 +110,7 @@
         <artifactId>swagger-maven-plugin</artifactId>
         <configuration>
           <resourcePackages>
-            <resourcePackage>org.tenkichannel.predicition.rain</resourcePackage>
+            <resourcePackage>org.tenkichannel.forecast.rain</resourcePackage>
           </resourcePackages>
           <outputDirectory>${basedir}/target/classes/META-INF/resources/docs/</outputDirectory>
           <outputFilename>swagger</outputFilename>
@@ -133,26 +133,4 @@
       </plugin>
     </plugins>
   </build>
-  <profiles>
-    <profile>
-      <id>native</id>
-      <activation>
-        <property>
-          <name>native</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-maven-plugin</artifactId>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>

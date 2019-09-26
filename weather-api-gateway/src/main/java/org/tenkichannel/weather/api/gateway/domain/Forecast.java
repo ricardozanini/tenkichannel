@@ -1,5 +1,8 @@
 package org.tenkichannel.weather.api.gateway.domain;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class Forecast {
 
     private Location location;

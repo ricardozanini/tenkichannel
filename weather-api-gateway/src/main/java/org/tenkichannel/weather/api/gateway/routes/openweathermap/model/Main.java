@@ -1,7 +1,11 @@
 
 package org.tenkichannel.weather.api.gateway.routes.openweathermap.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 
+@RegisterForReflection
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Main {
 
     private Double temp;

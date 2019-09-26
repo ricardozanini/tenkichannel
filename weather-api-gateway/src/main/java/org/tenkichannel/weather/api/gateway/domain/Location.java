@@ -3,10 +3,12 @@ package org.tenkichannel.weather.api.gateway.domain;
 import java.io.Serializable;
 import java.util.Objects;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 /**
  * Domain model for requesting weather data.
  */
-
+@RegisterForReflection
 public class Location implements Serializable {
 
     private static final long serialVersionUID = 2072056895286744369L;

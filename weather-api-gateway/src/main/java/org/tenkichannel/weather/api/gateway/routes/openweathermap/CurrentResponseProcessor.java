@@ -1,9 +1,14 @@
 package org.tenkichannel.weather.api.gateway.routes.openweathermap;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
+import java.io.IOException;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.slf4j.Logger;
@@ -21,19 +26,26 @@ public class CurrentResponseProcessor implements Processor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CurrentResponseProcessor.class);
 
-    // Jsonb don't have official support on Camel yet, but let's use it since it's the standard on Quarkus
-    final private Jsonb jsonb = JsonbBuilder.create();
-
+    @Inject
+    ObjectMapper mapper;
+    
+    ObjectReader reader;
+    
     public CurrentResponseProcessor() {
 
     }
+    
+    @PostConstruct
+    public void init() {
+        reader = mapper.reader();
+    }
 
     @Override
-    public void process(Exchange exchange) {
+    public void process(Exchange exchange) throws IOException {
         LOGGER.debug("Starting to handle response from server");
         final String weatherDataJson = exchange.getIn().getBody(String.class);
         LOGGER.debug("Weather data dump: {}", weatherDataJson);
-        final Current current = jsonb.fromJson(weatherDataJson, Current.class);
+        final Current current = reader.forType(Current.class).readValue(weatherDataJson);
         final Weather weather = new Weather();
         if (current.getWeather().isEmpty()) {
             weather.setCondition("");
