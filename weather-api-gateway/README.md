@@ -11,7 +11,7 @@ $ cd tenkichannel
 $ mvn clean install
 # run the application
 $ cd weather-api-gateway
-$ mvn clean package quarkus:dev -Dorg.tenkichannel.weather.api.gateway.openweathermap.api_key=<my api key> -DskipTests
+$ mvn clean package quarkus:dev -Dquarkus.http.port=8081 -Dorg.tenkichannel.weather.api.gateway.openweathermap.api_key=<my api key> -DskipTests
 ```
 
 Enjoy the app at: [http://localhost:8080/swagger-ui/](http://localhost:8081/swagger-ui/).
