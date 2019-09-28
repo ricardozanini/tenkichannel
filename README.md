@@ -10,7 +10,7 @@ In this use case we have two services working together to answer a simple questi
 
 The first service, [**Rain Forecast Process**](rain-forecast-process) uses the process automation framework, Kogito, to automate a forecast process that will call the [**Weather API Gateway**](weather-api-gateway). Based on the weather forecast results, calculated by a decision rule, the process will give you the answer.
 
-The Weather API Gateway is a Camel service that hides the an external weather service and exposes the domain data that we're interested into. The gateway implements (in a certain level) the API Gateway pattern.
+The Weather API Gateway is a Camel service that hides the external weather service and exposes the domain data that we're interested in. The gateway implements (in a certain level) the [API Gateway pattern](https://microservices.io/patterns/apigateway.html).
 
 Both services are backed by the Quarkus framework. This means that you can run in native code in the cloud.
 
@@ -18,5 +18,5 @@ To make all this work, read the guides ([here](rain-forecast-process) and [here]
 
 ## TODO
 
-* [ ] OpenShift/Kubernetes templates to deploy the services into the cloud 
+* [ ] OpenShift templates to deploy the services into the cloud 
 * [ ] Deploy the Kogito service via Kogito CLI 
