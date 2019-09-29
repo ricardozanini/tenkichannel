@@ -166,7 +166,7 @@ kcontext.setVariable(&quot;weather&quot;, null);</bpmn2:script>
       <bpmn2:dataInputAssociation id="DataInputAssociation_8">
         <bpmn2:targetRef>DataInput_10</bpmn2:targetRef>
         <bpmn2:assignment id="Assignment_2">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_6">weatherService</bpmn2:from>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_6">forecast</bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_4">DataInput_10</bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
