@@ -1,0 +1,292 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: rain-forecast-demo
+  annotations:
+    openshift.io/display-name: "Rain Forecast Demo"
+    openshift.io/documentation-url: "https://github.com/ricardozanini/tenkichannel/blob/master/README.md"
+    openshift.io/provider-display-name: "TenkiChannel Demos"
+    openshift.io/support-url: "https://github.com/ricardozanini/tenkichannel/issues"
+    description: "A demo for the TenkiChannel Rain Forecast process, showcasing Kogito, Quarkus and Camel working together to answer a simple question: 'Is it gonna rain?'. See https://github.com/ricardozanini/tenkichannel"
+    iconClass: "icon-jboss"
+    tags: "kogito,quarkus,camel"
+parameters:
+- name: OPENWEATHER_API_KEY
+  description: "The API key for the openweatherdata.com. Sign in and grab one at https://openweathermap.org/api"
+  required: true
+- name: NAMESPACE
+  description: "Namespace where the demo will be deployed. Used for service discovery"
+  required: true
+labels:
+  template: rain-forecast-demo
+objects:
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: tenkichannel
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    name: tenkichannel-viewer
+  rules:
+  - apiGroups:
+    - ""
+    resources:
+    - services
+    verbs:
+    - list
+    - get
+    - watch
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    name: tenkichannel-viewer
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: Role
+    name: tenkichannel-viewer
+  subjects:
+  - kind: ServiceAccount
+    name: tenkichannel
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: weather-api-gateway
+      forecast: service
+    name: weather-api-gateway
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: 8443-tcp
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+    - name: 8778-tcp
+      port: 8778
+      protocol: TCP
+      targetPort: 8778
+    selector:
+      app: weather-api-gateway
+      deploymentconfig: weather-api-gateway
+      forecast: service
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: weather-api-gateway
+      forecast: service
+    name: weather-api-gateway
+    annotations:
+      template.alpha.openshift.io/wait-for-ready: "true"
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: weather-api-gateway
+      deploymentconfig: weather-api-gateway
+      forecast: service
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: weather-api-gateway
+          deploymentconfig: weather-api-gateway
+          forecast: service
+      spec:
+        containers:
+        - env:
+          - name: JAVA_OPTIONS
+            value: -Dorg.tenkichannel.weather.api.gateway.openweathermap.api_key=${OPENWEATHER_API_KEY}
+          image: quay.io/ricardozanini/weather-api-gateway:latest
+          imagePullPolicy: Always
+          name: weather-api-gateway
+          ports:
+          - containerPort: 8778
+            protocol: TCP
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - weather-api-gateway
+        from:
+          kind: ImageStreamTag
+          name: weather-api-gateway:latest
+          namespace: tenkichannel
+      type: ImageChange
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: weather-api-gateway
+      forecast: service
+    name: weather-api-gateway
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/imported-from: quay.io/ricardozanini/weather-api-gateway:latest
+      from:
+        kind: DockerImage
+        name: quay.io/ricardozanini/weather-api-gateway:latest
+      generation: 2
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: Source
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: rain-forecast
+    name: rain-forecast
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: 8443-tcp
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+    - name: 8778-tcp
+      port: 8778
+      protocol: TCP
+      targetPort: 8778
+    selector:
+      app: rain-forecast
+      deploymentconfig: rain-forecast
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: rain-forecast
+    name: rain-forecast
+    annotations:
+      template.alpha.openshift.io/wait-for-ready: "true"
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: rain-forecast
+      deploymentconfig: rain-forecast
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: rain-forecast
+          deploymentconfig: rain-forecast
+      spec:
+        containers:
+        - env:
+          - name: NAMESPACE
+            value: ${NAMESPACE}
+          image: quay.io/ricardiozanini/rain-forecast-process:latest
+          imagePullPolicy: Always
+          name: rain-forecast
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+          - containerPort: 8778
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: tenkichannel
+        serviceAccountName: tenkichannel
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - rain-forecast
+        from:
+          kind: ImageStreamTag
+          name: rain-forecast:latest
+          namespace: tenkichannel
+      type: ImageChange
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: rain-forecast
+    name: rain-forecast
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations:
+        openshift.io/imported-from: quay.io/ricardozanini/rain-forecast-process:latest
+      from:
+        kind: DockerImage
+        name: quay.io/ricardozanini/rain-forecast-process:latest
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: Source
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    labels:
+      app: rain-forecast
+    name: rain-forecast
+  spec:
+    port:
+      targetPort: 8080-tcp
+    subdomain: ""
+    to:
+      kind: Service
+      name: rain-forecast
+      weight: 100
+    wildcardPolicy: None
