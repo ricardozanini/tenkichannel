@@ -1,4 +1,4 @@
-package org.tenkichannel.weather.api.gateway.routes.openweathermap;
+package org.tenkichannel.weather.api.gateway.openweather.openweathermap;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
@@ -7,6 +7,7 @@ import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.tenkichannel.weather.api.gateway.openweather.OpenWeatherDataProperties;
 
 import java.util.Scanner;
 

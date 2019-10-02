@@ -1,4 +1,4 @@
-package org.tenkichannel.weather.api.gateway.routes.openweathermap;
+package org.tenkichannel.weather.api.gateway.openweather;
 
 public final class OpenWeatherDataProperties {
 
