@@ -5,6 +5,9 @@ echo "--------------- Copying image_metadata.json"
 
 if [[ $MAVEN_ARGS_APPEND == *"rain-forecast-process"* ]]; then
     cp  /tmp/src/rain-forecast-process/.s2i/image_metadata.json /tmp/.s2i/image_metadata.json
+    if [ $? -ne 0 ] then
+      echo "-------- Fail to copy image metadata, failing build"
+    fi
 fi
 
 
