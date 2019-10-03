@@ -12,9 +12,7 @@ if [[ $MAVEN_ARGS_APPEND == *"rain-forecast-process"* ]]; then
     fi
 fi
 
-
 /usr/local/s2i/assemble
 rc=$?
-
 
 exit $rc
