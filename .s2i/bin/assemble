@@ -1,0 +1,15 @@
+#!/bin/bash
+echo "--------------- Starting custom assemble"
+
+echo "--------------- Copying image_metadata.json"
+
+if [[ $MAVEN_ARGS_APPEND == *"rain-forecast-process"* ]]; then
+    cp  /tmp/src/rain-forecast-process/.s2i/image_metadata.json /tmp/.s2i/image_metadata.json
+fi
+
+
+/usr/local/s2i/assemble
+rc=$?
+
+
+exit $rc
