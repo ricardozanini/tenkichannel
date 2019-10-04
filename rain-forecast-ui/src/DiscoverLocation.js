@@ -11,10 +11,11 @@ class DiscoverLocation extends React.Component {
         }
 
         if (!this.props.coords) {
-            return <div>Waiting for your location :)</div>
+            return <div>Reading for your location...</div>
         }
 
-        return <div>Your location is latitude {this.props.coords.latitude} and longitude {this.props.coords.longitude}</div>
+        console.log("Your location is latitude: " + this.props.coords.latitude + " and longitude: " + this.props.coords.longitude);
+        return null
     }
 }
 
