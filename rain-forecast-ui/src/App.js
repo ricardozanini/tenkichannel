@@ -12,7 +12,8 @@ class App extends React.Component {
   }
 
   onLocationChange(newLocation) {
-    this.setState({ location: newLocation })
+    console.log("Here's the position: " + newLocation.coords);
+    this.setState({ location: newLocation.coords })
   }
 
   render() {
@@ -20,7 +21,7 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           <RainForecast location={this.state.location} />
-          <DiscoverLocation onLocationChange={this.onLocationChange} />
+          <DiscoverLocation onSuccess={this.onLocationChange} />
         </header>
       </div>
     );

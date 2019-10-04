@@ -3,17 +3,6 @@ import { geolocated } from "react-geolocated";
 
 class DiscoverLocation extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = { location: null }
-    }
-
-    onLocationFetched() {
-        let newLocation = { lat: this.props.coords.latitude, long: this.props.coords.longitude }
-        this.setState({ location: newLocation });
-        this.props.onLocationChange(newLocation);
-    }
-
     render() {
         if (!this.props.isGeolocationAvailable) {
             return <div>Your browser does not support Geolocation</div>
@@ -21,14 +10,11 @@ class DiscoverLocation extends React.Component {
             return <div>Waiting for your location :)</div>
         }
 
-        if (this.props.coords && this.state.location == null) {
-            this.onLocationFetched()
-        }
-
-        if (this.state.location == null) {
+        if (!this.props.coords) {
             return <div>Waiting for your location :)</div>
         }
-        return <div>Your location is latitude {this.state.location.lat} and longitude {this.state.location.long}</div>
+
+        return <div>Your location is latitude {this.props.coords.latitude} and longitude {this.props.coords.longitude}</div>
     }
 }
 
@@ -37,5 +23,5 @@ export default geolocated({
     positionOptions: {
         enableHighAccuracy: false,
     },
-    userDecisionTimeout: 5000,
+    userDecisionTimeout: 5000
 })(DiscoverLocation);
