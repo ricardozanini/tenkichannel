@@ -17,7 +17,7 @@ class RainForecast extends React.Component {
         }
 
         if (this.state.rain == null && this.props.location != null) {
-            let host = process.env.BACKEND_HOST 
+            let host = process.env.REACT_APP_BACKEND_HOST 
             if (process.env.NODE_ENV !== 'production') {
                 console.log("Running on non production environment");
                 host = this.DEV_PROXY_HOST
