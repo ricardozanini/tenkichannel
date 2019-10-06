@@ -1,0 +1,10 @@
+{
+  "labels": [
+    {
+      "org.tenkichannel/service": "rain-forecast-ui"
+    },
+    {
+      "io.openshift.expose-services": "8080:http"
+    }
+  ]
+}
