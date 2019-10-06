@@ -1,3 +1,11 @@
 #!/bin/bash
 
-# keep me
+if [ -d /opt/app-root/src/output ]; then
+    echo "Moving build files to root directory"
+    mv /opt/app-root/src/output/* /opt/app-root/src/
+    rm -rf /opt/app-root/src/output/
+else
+    echo "Application not found at /opt/app-root/src/output, failing build"
+    exit 1
+fi
+
