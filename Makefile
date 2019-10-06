@@ -21,7 +21,7 @@ build-weather-image:
 
 .PHONY: build-rain-image
 build-rain-image:
-	@echo .......... Building Weather API Gateway JAR .........................
+	@echo .......... Building Rain Forecast Process JAR .........................
 	mvn clean package -pl rain-forecast-process -am
 	@echo .......... Building Rain Forecast Process Image .....................
 	docker build rain-forecast-process/ --tag quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION}
@@ -30,6 +30,18 @@ build-rain-image:
 	docker push quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION}
 	docker push quay.io/${QUAY_NAMESPACE}/rain-forecast-process:latest
 	@echo .......... Image Rain Forecast Process successfully built ...........
+
+.PHONY: build-rain-ui-image
+build-rain-ui-image:
+	@echo .......... Building Rain Forecast UI .........................
+	npm run --prefix rain-forecast-ui build
+	@echo .......... Building Rain Forecast UI Image .....................
+	s2i build rain-forecast-ui/build/ docker.io/centos/nginx-114-centos7 quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:${VERSION}
+	@echo .......... Pushing to quay.io .......................................
+	docker tag quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:${VERSION} quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:latest
+	docker push quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:${VERSION}
+	docker push quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:latest
+	@echo .......... Image Rain Forecast UI successfully built ...........
 
 # Image Reference docs:
 # https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html-single/red_hat_java_s2i_for_openshift/index#configuration_environment_variables
@@ -58,4 +70,3 @@ build-s2i-rain-image:
 	docker push quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION}
 	docker push quay.io/${QUAY_NAMESPACE}/rain-forecast-process:latest
 	@echo .......... Image Rain Forecast Process successfully built .........
-
