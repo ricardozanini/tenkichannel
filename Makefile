@@ -48,6 +48,7 @@ build-s2i-weather-image:
 	docker push quay.io/${QUAY_NAMESPACE}/weather-api-gateway:latest
 	@echo .......... Image Weather API Gateway successfully built ...........
 
+# # TODO: move to kogito builder image once we have modules builds
 .PHONY: build-s2i-rain-image
 build-s2i-rain-image:
 	@echo .......... Building S2I Rain Forecast Process Image ...............
