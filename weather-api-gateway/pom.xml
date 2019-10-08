@@ -2,18 +2,39 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.tenkichannel</groupId>
-    <artifactId>tenkichannel-bom</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-  </parent>
-
+  <groupId>org.tenkichannel</groupId>
   <artifactId>weather-api-gateway</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
   <name>Tenki Channel :: Weather API Gateway</name>
   <description>The Weather API Gateway</description>
 
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.org.tenkichannel>1.0.0-SNAPSHOT</version.org.tenkichannel>
+    <!-- update this version when Camel update theirs -->
+    <version.io.quarkus>0.22.0</version.io.quarkus>
+    <version.org.apache.camel.quarkus>0.2.0</version.org.apache.camel.quarkus>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.tenkichannel</groupId>
+        <artifactId>tenkichannel-bom</artifactId>
+        <version>${version.org.tenkichannel}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom</artifactId>
+        <version>${version.io.quarkus}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>org.apache.camel.quarkus</groupId>
         <artifactId>camel-quarkus-bom</artifactId>
@@ -48,6 +69,16 @@
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>mockwebserver</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

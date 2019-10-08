@@ -2,24 +2,50 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.tenkichannel</groupId>
-    <artifactId>tenkichannel-bom</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-  </parent>
+  <groupId>org.tenkichannel</groupId>
   <artifactId>rain-forecast-process</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
 
   <name>Tenki Channel :: Rain Forecast Process</name>
   <description>Kogito Runtime Service for the rain forecast process</description>
 
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- deps -->
+    <version.org.kie.kogito>0.4.0</version.org.kie.kogito>
+    <!-- update this version when Camel update theirs -->
+    <version.io.quarkus>0.22.0</version.io.quarkus>
+    <!-- must follow kogito -->
+    <version.com.squareup.okhttp3>3.12.0</version.com.squareup.okhttp3>
+    <!-- plugins -->
+    <version.maven.failsafe.plugin>3.0.0-M3</version.maven.failsafe.plugin>
+    <version.swagger.maven.plugin>2.1.0</version.swagger.maven.plugin>
+    <version.surefire.plugin>3.0.0-M3</version.surefire.plugin>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom</artifactId>
+        <version>${version.io.quarkus}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.squareup.okhttp3</groupId>
+        <artifactId>mockwebserver</artifactId>
+        <version>${version.com.squareup.okhttp3}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -29,41 +55,57 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-jsonb</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-api</artifactId>
+      <version>${version.org.kie.kogito}</version>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core-static</artifactId>
+      <version>${version.org.kie.kogito}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>drools-core</artifactId>
+      <version>${version.org.kie.kogito}</version>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>drools-compiler</artifactId>
+      <version>${version.org.kie.kogito}</version>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>drools-canonical-model</artifactId>
+      <version>${version.org.kie.kogito}</version>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>drools-model-compiler</artifactId>
+      <version>${version.org.kie.kogito}</version>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>jbpm-flow</artifactId>
+      <version>${version.org.kie.kogito}</version>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>process-management-addon</artifactId>
+      <version>${version.org.kie.kogito}</version>
     </dependency>
+
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-cloud-workitems</artifactId>
+      <version>${version.org.kie.kogito}</version>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>monitoring-prometheus-addon</artifactId>
+      <version>${version.org.kie.kogito}</version>
     </dependency>
     <!-- Included so swagger-ui is available in quarkus dev mode on http://localhost:8080/swagger-ui -->
     <dependency>
@@ -92,11 +134,13 @@
       <plugin>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-maven-plugin</artifactId>
+        <version>${version.org.kie.kogito}</version>
         <extensions>true</extensions>
       </plugin>
       <plugin>
         <groupId>io.openapitools.swagger</groupId>
         <artifactId>swagger-maven-plugin</artifactId>
+        <version>${version.swagger.maven.plugin}</version>
         <configuration>
           <resourcePackages>
             <resourcePackage>org.tenkichannel.forecast.rain</resourcePackage>
@@ -120,6 +164,74 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-maven-plugin</artifactId>
+        <version>${version.io.quarkus}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build</goal>
+            </goals>
+            <configuration>
+              <uberJar>true</uberJar>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${version.surefire.plugin}</version>
+        <configuration>
+          <systemProperties>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+          </systemProperties>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${version.maven.failsafe.plugin}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <systemProperties>
+                <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+              </systemProperties>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>native</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-maven-plugin</artifactId>
+            <version>${version.io.quarkus}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>native-image</goal>
+                </goals>
+                <configuration>
+                  <enableHttpUrlHandler>true</enableHttpUrlHandler>
+                  <additionalBuildArgs>--allow-incomplete-classpath</additionalBuildArgs>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

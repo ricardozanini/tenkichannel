@@ -9,11 +9,6 @@
   <name>Tenki Channel :: Parent BOM</name>
   <description>BOM Project for Tenki Channel Java Projects</description>
 
-  <modules>
-    <module>weather-api-gateway</module>
-    <module>rain-forecast-process</module>
-  </modules>
-
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -82,21 +77,15 @@
         <version>${version.com.squareup.okhttp3}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.apache.camel.quarkus</groupId>
+        <artifactId>camel-quarkus-bom</artifactId>
+        <version>${version.org.apache.camel.quarkus}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <dependencies>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-junit5</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 
   <build>
     <pluginManagement>
