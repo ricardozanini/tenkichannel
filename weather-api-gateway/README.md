@@ -6,11 +6,8 @@ Get an API Key at the [OpenWeather API web site](https://openweathermap.org/api)
 
 ```bash
 # don't forget to clone me! git clone https://github.com/ricardozanini/tenkichannel.git
-$ cd tenkichannel
-# install all the bits
-$ mvn clean install
+$ cd tenkichannel/weather-api-gateway
 # run the application
-$ cd weather-api-gateway
 $ mvn clean package quarkus:dev -Dquarkus.http.port=8081 -Dorg.tenkichannel.weather.api.gateway.openweathermap.api_key=<my api key> -DskipTests
 ```
 

@@ -12,7 +12,7 @@ A sample process using [Kogito Runtimes](https://github.com/kiegroup/kogito-runt
 
 ```shell
 # have you cloned this repo? git clone https://github.com/ricardozanini/tenkichannel.git
-cd tenkichannel/rain-prediction-process
+cd tenkichannel/rain-forecast-process
 mvn clean package quarkus:dev -Dlocal=true -DskipTests
 ```
 

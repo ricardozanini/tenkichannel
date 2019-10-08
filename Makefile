@@ -10,38 +10,29 @@ build-images:
 .PHONY: build-weather-image
 build-weather-image:
 	@echo .......... Building Weather API Gateway JAR .........................
-	mvn clean package -pl weather-api-gateway -am
+	cd weather-api-gateway
+	mvn clean package
 	@echo .......... Building Weather API Gateway Image .......................
-	docker build weather-api-gateway/ --tag quay.io/${QUAY_NAMESPACE}/weather-api-gateway:${VERSION}
-	@echo .......... Pushing to quay.io .......................................
-	docker tag quay.io/${QUAY_NAMESPACE}/weather-api-gateway:${VERSION} quay.io/${QUAY_NAMESPACE}/weather-api-gateway:latest
-	docker push quay.io/${QUAY_NAMESPACE}/weather-api-gateway:${VERSION}
-	docker push quay.io/${QUAY_NAMESPACE}/weather-api-gateway:latest
-	@echo .......... Image Weather API Gateway successfully built .............
+	docker build --tag quay.io/${QUAY_NAMESPACE}/weather-api-gateway:${VERSION}
+	make push app="weather-api-gateway"
 
 .PHONY: build-rain-image
 build-rain-image:
 	@echo .......... Building Rain Forecast Process JAR .........................
-	mvn clean package -pl rain-forecast-process -am
+	cd rain-forecast-process
+	mvn clean package
 	@echo .......... Building Rain Forecast Process Image .....................
-	docker build rain-forecast-process/ --tag quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION}
-	@echo .......... Pushing to quay.io .......................................
-	docker tag quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION} quay.io/${QUAY_NAMESPACE}/rain-forecast-process:latest
-	docker push quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION}
-	docker push quay.io/${QUAY_NAMESPACE}/rain-forecast-process:latest
-	@echo .......... Image Rain Forecast Process successfully built ...........
+	docker build . --tag quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION}
+	make push app="rain-forecast-process"
 
 .PHONY: build-rain-ui-image
 build-rain-ui-image:
 	@echo .......... Building Rain Forecast UI .........................
+	cd rain-forecast-ui
 	npm run --prefix rain-forecast-ui build
 	@echo .......... Building Rain Forecast UI Image .....................
-	s2i build rain-forecast-ui/build/ docker.io/centos/nginx-114-centos7 quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:${VERSION}
-	@echo .......... Pushing to quay.io .......................................
-	docker tag quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:${VERSION} quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:latest
-	docker push quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:${VERSION}
-	docker push quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:latest
-	@echo .......... Image Rain Forecast UI successfully built ...........
+	s2i build build/ docker.io/centos/nginx-114-centos7 quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:${VERSION}
+	make push app="rain-forecast-ui"
 
 # Image Reference docs:
 # https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html-single/red_hat_java_s2i_for_openshift/index#configuration_environment_variables
@@ -53,20 +44,24 @@ build-s2i-images:
 .PHONY: build-s2i-weather-image
 build-s2i-weather-image:
 	@echo .......... Building S2I Weather API Gateway Image .................
-	s2i build . openjdk/openjdk-11-rhel8 quay.io/${QUAY_NAMESPACE}/weather-api-gateway:${VERSION} -e MAVEN_ARGS_APPEND="-pl weather-api-gateway -am" -e ARTIFACT_DIR="weather-api-gateway/target" -e JAVA_APP_JAR="weather-api-gateway-${JAVA_VERSION}-runner.jar"
-	@echo .......... Pushing to quay.io .....................................
-	docker tag quay.io/${QUAY_NAMESPACE}/weather-api-gateway:${VERSION} quay.io/${QUAY_NAMESPACE}/weather-api-gateway:latest
-	docker push quay.io/${QUAY_NAMESPACE}/weather-api-gateway:${VERSION}
-	docker push quay.io/${QUAY_NAMESPACE}/weather-api-gateway:latest
-	@echo .......... Image Weather API Gateway successfully built ...........
+	cd weather-api-gateway
+	s2i build . openjdk/openjdk-11-rhel8 quay.io/${QUAY_NAMESPACE}/weather-api-gateway:${VERSION}
+	make push app="weather-api-gateway"
 
-# # TODO: move to kogito builder image once we have modules builds
 .PHONY: build-s2i-rain-image
 build-s2i-rain-image:
 	@echo .......... Building S2I Rain Forecast Process Image ...............
-	s2i build . openjdk/openjdk-11-rhel8 quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION}  -e MAVEN_ARGS_APPEND="-pl rain-forecast-process -am" -e ARTIFACT_DIR="rain-forecast-process/target" -e JAVA_APP_JAR="rain-forecast-process-${JAVA_VERSION}-runner.jar"
-	@echo .......... Pushing to quay.io .....................................
-	docker tag quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION} quay.io/${QUAY_NAMESPACE}/rain-forecast-process:latest
-	docker push quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION}
-	docker push quay.io/${QUAY_NAMESPACE}/rain-forecast-process:latest
-	@echo .......... Image Rain Forecast Process successfully built .........
+	cd rain-forecast-process
+	s2i build . quay.io/kiegroup/kogito-quarkus-ubi8-s2i:0.4.0 quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION}  -e NATIVE=true --runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:0.4.0
+	make push app="rain-forecast-process"
+
+.PHONY: push
+app = ""
+push:
+	@echo .......... Pushing ${app} to quay.io .....................................
+	docker tag quay.io/${QUAY_NAMESPACE}/${app}:${VERSION} quay.io/${QUAY_NAMESPACE}/${app}:latest
+	docker push quay.io/${QUAY_NAMESPACE}/${app}:${VERSION}
+	docker push quay.io/${QUAY_NAMESPACE}/${app}:latest
+	@echo .......... Image ${app} successfully pushed to quay.io ........, .........
+
+
