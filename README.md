@@ -51,7 +51,7 @@ See how to use it at the [Rain Forecast README doc](rain-forecast-process/README
 
 Deploying using those templates it's easy to get the application working right away since we used pre built images, but in the real world you'll have to build (no pun intended) your way in.
 
-That's why we have the [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) to do the hard job to you. First thing, [install it](https://github.com/kiegroup/kogito-cloud-operator#installation) in your cluster and then you can deploy the Rain Forecast application with a CR:
+That's why we have the [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) to do the hard job for you. First thing, [install it](https://github.com/kiegroup/kogito-cloud-operator#installation) in your cluster and then you can deploy the Rain Forecast application with a CR:
 
 ```bash
 $ oc new-project tenkichannel
