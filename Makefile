@@ -44,15 +44,13 @@ build-s2i-images:
 .PHONY: build-s2i-weather-image
 build-s2i-weather-image:
 	@echo .......... Building S2I Weather API Gateway Image .................
-	cd weather-api-gateway
-	s2i build . openjdk/openjdk-11-rhel8 quay.io/${QUAY_NAMESPACE}/weather-api-gateway:${VERSION}
+	s2i build weather-api-gateway openjdk/openjdk-11-rhel8 quay.io/${QUAY_NAMESPACE}/weather-api-gateway:${VERSION}
 	make push app="weather-api-gateway"
 
 .PHONY: build-s2i-rain-image
 build-s2i-rain-image:
 	@echo .......... Building S2I Rain Forecast Process Image ...............
-	cd rain-forecast-process
-	s2i build . quay.io/kiegroup/kogito-quarkus-ubi8-s2i:0.4.0 quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION}  -e NATIVE=true --runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:0.4.0
+	s2i build rain-forecast-process/ quay.io/kiegroup/kogito-quarkus-ubi8-s2i:0.4.0 quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION}  -e NATIVE=true --runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:0.4.0
 	make push app="rain-forecast-process"
 
 .PHONY: push
