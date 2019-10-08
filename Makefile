@@ -47,7 +47,9 @@ build-s2i-rain-image:
 .PHONY: build-s2i-rain-ui-image
 build-s2i-rain-ui-image:
 	@echo .......... Building Rain Forecast UI Image .....................
-	s2i build rain-forecast-ui/ registry.redhat.io/rhoar-nodejs-tech-preview/rhoar-nodejs-10-webapp:latest  quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:${VERSION} --runtime-image docker.io/centos/nginx-114-centos7:latest --runtime-artifact /opt/app-root/output/
+	#rm -rf rain-forecast-ui/node-modules
+	#rm -rf rain-forecast-ui/build
+	s2i build rain-forecast-ui/ docker.io/nodeshift/centos7-s2i-web-app:latest quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:${VERSION} --runtime-image docker.io/centos/nginx-114-centos7:latest --runtime-artifact /opt/app-root/output
 
 .PHONY: push
 app = ""

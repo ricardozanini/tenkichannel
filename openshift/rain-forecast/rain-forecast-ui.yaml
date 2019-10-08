@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: rain-forecast-demo-ui
+  annotations:
+    openshift.io/display-name: "Rain Forecast Demo UI"
+    openshift.io/documentation-url: "https://github.com/ricardozanini/tenkichannel/blob/master/README.md"
+    openshift.io/provider-display-name: "TenkiChannel Demos"
+    openshift.io/support-url: "https://github.com/ricardozanini/tenkichannel/issues"
+    description: "User Interface for the Rain Forecast Demo"
+    iconClass: "icon-jboss"
+    tags: "kogito,quarkus,camel,react"
+parameters:
+- name: BACKEND_ROUTE
+  description: "Secure route that the UI will fetch to gather the rain forecast. Example: https://rain-forecast-tenkichannel.mycluster.com/"
+  required: true
+labels:
+  template: rain-forecast-demo
+objects:

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: rain-forecast-demo
+  name: rain-forecast-demo-backend
   annotations:
-    openshift.io/display-name: "Rain Forecast Demo"
+    openshift.io/display-name: "Rain Forecast Demo Backend"
     openshift.io/documentation-url: "https://github.com/ricardozanini/tenkichannel/blob/master/README.md"
     openshift.io/provider-display-name: "TenkiChannel Demos"
     openshift.io/support-url: "https://github.com/ricardozanini/tenkichannel/issues"
@@ -281,6 +281,8 @@ objects:
     labels:
       app: rain-forecast
     name: rain-forecast
+    annotations:
+      template.openshift.io/expose-uri: "https://{.spec.host}{.spec.path}"
   spec:
     port:
       targetPort: 8080-tcp
