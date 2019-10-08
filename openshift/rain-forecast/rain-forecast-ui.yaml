@@ -12,8 +12,195 @@ metadata:
     tags: "kogito,quarkus,camel,react"
 parameters:
 - name: BACKEND_ROUTE
+  displayName: Backend Route
   description: "Secure route that the UI will fetch to gather the rain forecast. Example: https://rain-forecast-tenkichannel.mycluster.com/"
   required: true
+- name: SOURCE_REPOSITORY_URL
+  description: The source URL for the application
+  displayName: Source URL
+  value: https://github.com/ricardozanini/tenkichannel
+  required: true
+- name: SOURCE_REPOSITORY_REF
+  description: The branch name for the application
+  displayName: Source Branch
+  value: master
+  required: true
+- name: SOURCE_REPOSITORY_DIR
+  description: The location within the source repo of the application
+  displayName: Source Directory
+  value: rain-forecast-ui
+  required: true
 labels:
-  template: rain-forecast-demo
+  template: rain-forecast-demo-ui
 objects:
+- apiVersion: v1
+  kind: ImageStream
+  labels:
+      app: rain-forecast-ui
+  metadata:
+    name: rain-forecast-ui-builder
+  spec: {}
+- apiVersion: v1
+  kind: ImageStream
+  labels:
+      app: rain-forecast-ui
+  metadata:
+    name: rain-forecast-ui-runtime
+  spec: {}
+- apiVersion: v1
+  kind: BuildConfig
+  labels:
+      app: rain-forecast-ui
+  metadata:
+    name: rain-forecast-ui-builder
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: rain-forecast-ui-builder:latest
+    source:
+      git:
+        uri: ${SOURCE_REPOSITORY_URL}
+        ref: ${SOURCE_REPOSITORY_REF}
+      contextDir: ${SOURCE_REPOSITORY_DIR}
+      type: Git
+    strategy:
+      sourceStrategy:
+        env:
+          - name: REACT_APP_BACKEND_HOST 
+            value: ${BACKEND_ROUTE}
+        from:
+          kind: DockerImage
+          name: docker.io/nodeshift/centos7-s2i-web-app:latest
+        incremental: true
+      type: Source
+    triggers:
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+- apiVersion: v1
+  kind: BuildConfig
+  labels:
+      app: rain-forecast-ui
+  metadata:
+    name: rain-forecast-ui-runtime
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: rain-forecast-ui-runtime:latest
+    source:
+      type: Image
+      images:                              
+        - from:
+            kind: ImageStreamTag
+            name: rain-forecast-ui-builder:latest
+          paths:
+            - sourcePath: /opt/app-root/output/.
+              destinationDir: .
+    strategy: 
+      sourceStrategy:
+        from:
+          kind: DockerImage
+          name: docker.io/centos/nginx-114-centos7:latest
+        incremental: true
+    triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChange:
+        from:
+          kind: ImageStreamTag
+          name: rain-forecast-ui-builder:latest
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: rain-forecast-ui
+      forecast: service
+    name: rain-forecast-ui
+  spec:
+    ports:
+    - name: 8080-http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: rain-forecast-ui
+      deploymentconfig: rain-forecast-ui
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: rain-forecast-ui
+    name: rain-forecast-ui
+    annotations:
+      template.alpha.openshift.io/wait-for-ready: "true"
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: rain-forecast-ui
+      deploymentconfig: rain-forecast-ui
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: rain-forecast-ui
+          deploymentconfig: rain-forecast-ui
+      spec:
+        containers:
+        - image: rain-forecast-ui-runtime:latest
+          imagePullPolicy: Always
+          name: rain-forecast-ui
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - rain-forecast-ui
+        from:
+          kind: ImageStreamTag
+          name: rain-forecast-ui-runtime:latest
+      type: ImageChange
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: rain-forecast-ui
+    name: rain-forecast-ui
+    annotations:
+      template.openshift.io/expose-uri: "https://{.spec.host}{.spec.path}"
+  spec:
+    port:
+      targetPort: 8080-http
+    tls:
+      termination: edge
+    subdomain: ""
+    to:
+      kind: Service
+      name: rain-forecast-ui
+      weight: 100
+    wildcardPolicy: None

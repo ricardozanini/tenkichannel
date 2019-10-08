@@ -25,7 +25,7 @@ It's pretty easy to deploy the Rain Forecast demo on your OpenShift cluster:
 git clone https://github.com/ricardozanini/tenkichannel.git
 $ cd tenkichannel
 $ oc create new-project tenkichannel
-$ oc create -f openshift/rain-forecast/template.yaml
+$ oc create -f openshift/rain-forecast/rain-forecast-backend.yaml
 # grab your API key on https://openweathermap.org/api
 $ oc new-app --template=rain-forecast-demo -p NAMESPACE=tenkichannel -p OPENWEATHER_API_KEY=<your-api-key>
 ```
@@ -36,10 +36,29 @@ Then, use the route to access the process:
 $ oc get route
 
 NAME            HOST/PORT                                                           PATH   SERVICES        PORT       TERMINATION   WILDCARD
-rain-forecast   rain-forecast-tenkichannel.apps.your-cluster.com                           rain-forecast   8080-tcp                 None
+rain-forecast   rain-forecast-tenkichannel.apps.your-cluster.com                           rain-forecast   8080-tcp    edge         None
 ```
 
 See how to use it at the [Rain Forecast README doc](rain-forecast-process/README.md).
+
+#### Deploying the User Interface
+
+After having the backend working and playing with the API, it's time to have some fun with the UI. To deploy it, you'll need the Rain Forecast Process route url to make this work. Given that you've already deployed the `rain-forecast` application like stated above, just do:
+
+```bash
+# create the UI template
+$ oc create -f openshift/rain-forecast/rain-forecast-ui.yaml
+# create the UI application using as parameter the rain-forecast route that were generated in the above section
+$ oc new-app --template=rain-forecast-demo-ui -p BACKEND_ROUTE=https://rain-forecast-tenkichannel.apps.your-cluster.com
+```
+
+You should see the build spinning and in a couple minutes your application will be ready for use.
+
+If you're running on a development environment, chances are that you're using self signed certificates. If this is the case, try to access the backend route at least once to have your browser to trust in your certificate.
+
+Access the application using the new route, allow the browser to read your location and have fun!
+
+![](docs/img/rain-forecast-ui-ss.png)
 
 ## TODO
 
