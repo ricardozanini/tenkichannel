@@ -1,0 +1,16 @@
+apiVersion: app.kiegroup.org/v1alpha1
+kind: KogitoApp
+metadata:
+  name: rain-forecast
+spec:
+  build:
+    gitSource:
+      uri: https://github.com/ricardozanini/tenkichannel 
+      contextDir: rain-forecast-process
+    imageRuntime:
+      imageStreamTag: 0.4.0
+    imageS2I:
+      imageStreamTag: 0.4.0
+  env:
+    - name: "NAMESPACE"
+      value: tenkichannel

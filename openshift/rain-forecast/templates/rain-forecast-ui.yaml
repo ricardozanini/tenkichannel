@@ -116,7 +116,6 @@ objects:
   metadata:
     labels:
       app: rain-forecast-ui
-      forecast: service
     name: rain-forecast-ui
   spec:
     ports:

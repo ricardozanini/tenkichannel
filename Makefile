@@ -35,7 +35,7 @@ build-s2i-images:
 .PHONY: build-s2i-weather-image
 build-s2i-weather-image:
 	@echo .......... Building S2I Weather API Gateway Image .................
-	s2i build weather-api-gateway openjdk/openjdk-11-rhel8 quay.io/${QUAY_NAMESPACE}/weather-api-gateway:${VERSION}
+	s2i build weather-api-gateway docker.io/fabric8/s2i-java:latest-java11 quay.io/${QUAY_NAMESPACE}/weather-api-gateway:${VERSION}
 	make push app="weather-api-gateway"
 
 .PHONY: build-s2i-rain-image
