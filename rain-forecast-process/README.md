@@ -6,7 +6,7 @@ A sample process using [Kogito Runtimes](https://github.com/kiegroup/kogito-runt
 
 1. Read the [Kogito examples](https://github.com/kiegroup/kogito-examples) to get used with the Kogito project.
 
-2. Have the [Weather API Gateway](../weather-api-gateway/README.MD) ready on port `8081` 
+2. Have the [Weather API Gateway](../weather-api-gateway) ready on port `8081` 
 
 3. Run the following commands in your terminal to have the application started:
 
