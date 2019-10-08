@@ -16,7 +16,6 @@ build-weather-image:
 	docker build --tag quay.io/${QUAY_NAMESPACE}/weather-api-gateway:${VERSION}
 	make push app="weather-api-gateway"
 
-.PHONY: build-rain-image
 build-rain-image:
 	@echo .......... Building Rain Forecast Process JAR .........................
 	cd rain-forecast-process
@@ -25,21 +24,13 @@ build-rain-image:
 	docker build . --tag quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION}
 	make push app="rain-forecast-process"
 
-.PHONY: build-rain-ui-image
-build-rain-ui-image:
-	@echo .......... Building Rain Forecast UI .........................
-	cd rain-forecast-ui
-	npm run --prefix rain-forecast-ui build
-	@echo .......... Building Rain Forecast UI Image .....................
-	s2i build build/ docker.io/centos/nginx-114-centos7 quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:${VERSION}
-	make push app="rain-forecast-ui"
-
 # Image Reference docs:
 # https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html-single/red_hat_java_s2i_for_openshift/index#configuration_environment_variables
 .PHONY: build-s2i-images
 build-s2i-images:
 	- make build-s2i-weather-image
 	- make build-s2i-rain-image
+	- make build-s2i-rain-ui-image
 
 .PHONY: build-s2i-weather-image
 build-s2i-weather-image:
@@ -52,6 +43,11 @@ build-s2i-rain-image:
 	@echo .......... Building S2I Rain Forecast Process Image ...............
 	s2i build rain-forecast-process/ quay.io/kiegroup/kogito-quarkus-ubi8-s2i:0.4.0 quay.io/${QUAY_NAMESPACE}/rain-forecast-process:${VERSION}  -e NATIVE=true --runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:0.4.0
 	make push app="rain-forecast-process"
+
+.PHONY: build-s2i-rain-ui-image
+build-s2i-rain-ui-image:
+	@echo .......... Building Rain Forecast UI Image .....................
+	s2i build rain-forecast-ui/ registry.redhat.io/rhoar-nodejs-tech-preview/rhoar-nodejs-10-webapp:latest  quay.io/${QUAY_NAMESPACE}/rain-forecast-ui:${VERSION} --runtime-image docker.io/centos/nginx-114-centos7:latest --runtime-artifact /opt/app-root/output/
 
 .PHONY: push
 app = ""

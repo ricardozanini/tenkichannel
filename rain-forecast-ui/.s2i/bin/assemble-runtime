@@ -1,2 +1,14 @@
 #!/bin/bash
 
+if [ -d  /opt/app-root/src/output ]; then
+    # TODO: the file stills there, ideally we should untar the output folder into the root
+    echo "Trying to move the output folder to the right directory"
+    cp -rf /opt/app-root/src/output/* /opt/app-root/src/
+    if [ $? -ne 0 ]; then
+        echo "Error while trying to copy the built application to the NGINX root folder"
+        exit 1
+    fi
+else
+    echo "No output folder in the runtime image, failing build"
+    exit 1
+fi 
