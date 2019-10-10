@@ -1,4 +1,4 @@
-package org.tenkichannel.weather.api.gateway.routes.openweathermap;
+package org.tenkichannel.weather.api.gateway.openweather;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -15,7 +15,8 @@ public class OpenWeatherDataConfig {
     @ConfigProperty(name = OpenWeatherDataProperties.OPEN_WEATHER_MAP_API_KEY)
     String apiKey;
 
-    public OpenWeatherDataConfig() {}
+    public OpenWeatherDataConfig() {
+    }
 
     public String getBaseUri() {
         return baseUri;
@@ -39,5 +40,4 @@ public class OpenWeatherDataConfig {
         }
         return false;
     }
-
 }

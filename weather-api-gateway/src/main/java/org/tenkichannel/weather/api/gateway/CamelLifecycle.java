@@ -1,4 +1,4 @@
-package org.tenkichannel.weather.api.gateway.routes.openweathermap;
+package org.tenkichannel.weather.api.gateway;
 
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -13,8 +13,6 @@ import javax.net.ssl.X509TrustManager;
 
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
-import org.apache.camel.Exchange;
-import org.apache.camel.LoggingLevel;
 import org.apache.camel.SSLContextParametersAware;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.quarkus.core.runtime.CamelRuntime;
@@ -23,21 +21,24 @@ import org.apache.camel.support.jsse.SSLContextParameters;
 import org.apache.camel.support.jsse.TrustManagersParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tenkichannel.weather.api.gateway.openweather.OpenWeatherDataConfig;
+import org.tenkichannel.weather.api.gateway.routes.OpenWeatherRoute;
+import org.tenkichannel.weather.api.gateway.routes.YahooWeatherRoute;
 
 @ApplicationScoped
-public class OpenWeatherMapRouteFactory {
+public class CamelLifecycle {
 
-    public static final String ROUTE_CURRENT_WEATHER_DATA = "direct:getCurrentWeatherData";
-    private static final Logger LOGGER = LoggerFactory.getLogger(OpenWeatherMapRouteFactory.class);
+    public static final String WEATHER_ROUTE = "direct:getWeatherData";
+    private static final Logger LOGGER = LoggerFactory.getLogger(CamelLifecycle.class);
 
     @Inject
     CamelRuntime runtime;
 
     @Inject
-    QueryRequestProcessor queryRequestProcessor;
+    OpenWeatherRoute openWeather;
 
     @Inject
-    CurrentResponseProcessor currentResponseProcessor;
+    YahooWeatherRoute yahooWeather;
 
     @Inject
     OpenWeatherDataConfig config;
@@ -47,11 +48,13 @@ public class OpenWeatherMapRouteFactory {
         runtime.addProperty("starting", "true");
         // tls configuration
         if (this.config.isSecureProtocol()) {
-            LOGGER.info("Configuring TLS protocol for {}", config.baseUri);
+            LOGGER.info("Configuring TLS protocol for {}", config.getBaseUri());
             this.configureDefaultSslContextParameters();
         }
         LOGGER.debug("Adding route to Camel Context");
-        runtime.getContext().addRoutes(createOpenWeatherMapRoute());
+        runtime.getContext().addRoutes(getWeatherRoute());
+        runtime.getContext().addRoutes(openWeather.route());
+        runtime.getContext().addRoutes(yahooWeather.route());
     }
 
     void onStart(@Observes StartupEvent ev) throws Exception {
@@ -65,7 +68,6 @@ public class OpenWeatherMapRouteFactory {
 
     /**
      * Add the default TrustStore to the CamelContext
-     *
      * @return
      * @throws NoSuchAlgorithmException
      * @throws KeyStoreException
@@ -92,30 +94,18 @@ public class OpenWeatherMapRouteFactory {
         ((SSLContextParametersAware) this.runtime.getContext().getComponent("netty-http")).setUseGlobalSslContextParameters(true);
     }
 
-    private RouteBuilder createOpenWeatherMapRoute() {
+    private RouteBuilder getWeatherRoute() {
         return new RouteBuilder() {
-
             @Override
             public void configure() throws Exception {
                 // @formatter:off
-                from(ROUTE_CURRENT_WEATHER_DATA)
-                    .log(LoggingLevel.INFO, "Trying to connect to the OpenWeatherMap to get current weather data")
-                    .setHeader(Exchange.HTTP_METHOD, constant("GET"))
-                    .process(queryRequestProcessor)
-                    .log(LoggingLevel.INFO, "Headers defined: ${in.headers}")
-                    .setBody(constant(null)) //GET request doesn't have a body
-                    .doTry()
-                        .toF("netty-http:%s%s?ssl=%s", config.getBaseUri(), OpenWeatherDataConfig.OPEN_WEATHER_MAP_WEATHER_PATH, config.isSecureProtocol())
-                        .convertBodyTo(String.class, "UTF-8")
-                        .process(currentResponseProcessor)
-                     .doCatch(Exception.class)
-                         .log(LoggingLevel.ERROR, String.format("Impossible to send message to external Weather API: ${exchangeProperty[%s]}", Exchange.EXCEPTION_CAUGHT))
-                         .convertBodyTo(String.class, "UTF-8")
-                    .endDoTry()
-                    .log(LoggingLevel.DEBUG, "Body response from API call ${body}");
+                from(WEATHER_ROUTE)
+                        .loadBalance()
+                        .roundRobin()
+                        .to(openWeather.ROUTE_OPEN_WEATHER_DATA)
+                        .to(yahooWeather.ROUTE_YAHOO_WEATHER_DATA);
                 // @formatter:on
             }
         };
     }
-
 }

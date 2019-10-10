@@ -1,4 +1,4 @@
-package org.tenkichannel.weather.api.gateway.routes.openweathermap;
+package org.tenkichannel.weather.api.gateway.openweather;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -11,10 +11,11 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tenkichannel.weather.api.gateway.domain.Location;
+import org.tenkichannel.weather.api.gateway.openweather.OpenWeatherDataConfig;
 
 @ApplicationScoped
 public class QueryRequestProcessor implements Processor {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryRequestProcessor.class);
 
     @Inject
@@ -27,10 +28,10 @@ public class QueryRequestProcessor implements Processor {
 
         // @formatter:off
         exchange.getIn().setHeader(
-           Exchange.HTTP_QUERY, 
-           new StringBuilder(this.generateAuthentication())
-                                 .append("&")
-                                 .append(this.generateQuery(location)).toString());
+                Exchange.HTTP_QUERY,
+                new StringBuilder(this.generateAuthentication())
+                        .append("&")
+                        .append(this.generateQuery(location)).toString());
         // @formatter:on
         LOGGER.debug("Headers set to {}", exchange.getIn().getHeaders());
     }
@@ -40,19 +41,19 @@ public class QueryRequestProcessor implements Processor {
 
         if (location.getCity() != null && !location.getCity().isEmpty()) {
             sb.append("q=")
-              .append(URLEncoder.encode(location.getCity(), "UTF-8"));
+                    .append(URLEncoder.encode(location.getCity(), "UTF-8"));
             if (location.getCountryCode() != null && !location.getCountryCode().isEmpty()) {
                 sb.append(",")
-                  .append(location.getCountryCode());
+                        .append(location.getCountryCode());
             }
             return sb.toString();
         } else if (location.getCityId() > 0) {
             sb.append("id=").append(location.getCityId());
         } else if (location.getLatitude() != null && location.getLongitude() != null) {
             sb.append("lat=")
-              .append(location.getLatitude())
-              .append("&lon=")
-              .append(location.getLongitude());
+                    .append(location.getLatitude())
+                    .append("&lon=")
+                    .append(location.getLongitude());
         }
 
         return sb.toString();

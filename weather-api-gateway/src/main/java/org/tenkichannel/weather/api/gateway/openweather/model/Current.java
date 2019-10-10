@@ -1,5 +1,5 @@
 
-package org.tenkichannel.weather.api.gateway.routes.openweathermap.model;
+package org.tenkichannel.weather.api.gateway.openweather.model;
 
 import java.util.ArrayList;
 import java.util.List;

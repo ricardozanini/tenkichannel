@@ -1,4 +1,4 @@
-package org.tenkichannel.weather.api.gateway.routes.openweathermap;
+package org.tenkichannel.weather.api.gateway.openweather;
 
 import java.io.IOException;
 
@@ -13,12 +13,11 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tenkichannel.weather.api.gateway.domain.Weather;
-import org.tenkichannel.weather.api.gateway.routes.openweathermap.model.Current;
+import org.tenkichannel.weather.api.gateway.openweather.model.Current;
 
 /**
- * Process the JSON Response from the service <a href="https://openweathermap.org/current">Current</a> of the OpenWeatherData API. 
+ * Process the JSON Response from the service <a href="https://openweathermap.org/current">Current</a> of the OpenWeatherData API.
  * Bind to the exchange a {@link Weather} object.
- * 
  */
 @ApplicationScoped
 public class CurrentResponseProcessor implements Processor {
@@ -27,13 +26,13 @@ public class CurrentResponseProcessor implements Processor {
 
     @Inject
     ObjectMapper mapper;
-    
+
     ObjectReader reader;
-    
+
     public CurrentResponseProcessor() {
 
     }
-    
+
     @PostConstruct
     public void init() {
         reader = mapper.reader();
@@ -51,7 +50,7 @@ public class CurrentResponseProcessor implements Processor {
         } else {
             weather.setCondition(current.getWeather().get(0).getMain());
         }
-        LOGGER.debug("Final weather data is {}", weather);
+        LOGGER.debug("Final weather data is {} and provider is {}", weather, "OpenWeather");
         exchange.getIn().setBody(weather, Weather.class);
     }
 }

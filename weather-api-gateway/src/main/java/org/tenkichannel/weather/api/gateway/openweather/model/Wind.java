@@ -1,5 +1,5 @@
 
-package org.tenkichannel.weather.api.gateway.routes.openweathermap.model;
+package org.tenkichannel.weather.api.gateway.openweather.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.quarkus.runtime.annotations.RegisterForReflection;
