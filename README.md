@@ -20,7 +20,7 @@ $ cd tenkichannel
 $ oc new-project tenkichannel
 $ oc create -f openshift/rain-forecast/templates/rain-forecast-backend.yaml
 # grab your API key on https://openweathermap.org/api
-$ oc new-app --template=rain-forecast-demo -p NAMESPACE=tenkichannel -p OPENWEATHER_API_KEY=<your-api-key>
+$ oc new-app --template=rain-forecast-demo-backend -p NAMESPACE=tenkichannel -p OPENWEATHER_API_KEY=<your-api-key>
 # create the UI template
 $ oc create -f openshift/rain-forecast/templates/rain-forecast-ui.yaml
 ```
@@ -104,7 +104,7 @@ $ cd tenkichannel
 $ oc new-project tenkichannel
 $ oc create -f openshift/rain-forecast/templates/rain-forecast-backend.yaml
 # grab your API key on https://openweathermap.org/api
-$ oc new-app --template=rain-forecast-demo -p NAMESPACE=tenkichannel -p OPENWEATHER_API_KEY=<your-api-key>
+$ oc new-app --template=rain-forecast-demo-backend -p NAMESPACE=tenkichannel -p OPENWEATHER_API_KEY=<your-api-key>
 ```
 
 Then, you can see the route to access the process:
