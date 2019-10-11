@@ -1,4 +1,4 @@
-package org.tenkichannel.weather.api.gateway;
+package org.tenkichannel.weather.api.gateway.routes;
 
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -22,14 +22,13 @@ import org.apache.camel.support.jsse.TrustManagersParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tenkichannel.weather.api.gateway.openweather.OpenWeatherDataConfig;
-import org.tenkichannel.weather.api.gateway.routes.OpenWeatherRoute;
-import org.tenkichannel.weather.api.gateway.routes.YahooWeatherRoute;
+import org.tenkichannel.weather.api.gateway.yahooweather.YahooWeatherDataConfig;
 
 @ApplicationScoped
-public class CamelLifecycle {
+public class WeatherGatewayRouteFactory {
 
     public static final String WEATHER_ROUTE = "direct:getWeatherData";
-    private static final Logger LOGGER = LoggerFactory.getLogger(CamelLifecycle.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WeatherGatewayRouteFactory.class);
 
     @Inject
     CamelRuntime runtime;
@@ -41,20 +40,23 @@ public class CamelLifecycle {
     YahooWeatherRoute yahooWeather;
 
     @Inject
-    OpenWeatherDataConfig config;
+    OpenWeatherDataConfig openWeatherDataConfig;
+
+    @Inject
+    YahooWeatherDataConfig yahooWeatherDataConfig;
 
     public void onStarting(@Observes StartingEvent event) throws Exception {
         LOGGER.debug("Starting Camel Runtime");
         runtime.addProperty("starting", "true");
         // tls configuration
-        if (this.config.isSecureProtocol()) {
-            LOGGER.info("Configuring TLS protocol for {}", config.getBaseUri());
+        if (this.openWeatherDataConfig.isSecureProtocol() || this.yahooWeatherDataConfig.isSecureProtocol()) {
+            LOGGER.info("Configuring TLS protocol for {} and {}", openWeatherDataConfig.getBaseUri(), yahooWeatherDataConfig.getBaseUri());
             this.configureDefaultSslContextParameters();
         }
         LOGGER.debug("Adding route to Camel Context");
         runtime.getContext().addRoutes(getWeatherRoute());
-        runtime.getContext().addRoutes(openWeather.route());
-        runtime.getContext().addRoutes(yahooWeather.route());
+        runtime.getContext().addRoutes(openWeather);
+        runtime.getContext().addRoutes(yahooWeather);
     }
 
     void onStart(@Observes StartupEvent ev) throws Exception {

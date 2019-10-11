@@ -1,11 +1,12 @@
 package org.tenkichannel.weather.api.gateway.yahooweather;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.tenkichannel.weather.api.gateway.DataConfig;
+
 import javax.enterprise.context.ApplicationScoped;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
 @ApplicationScoped
-public class YahooWeatherDataConfig {
+public class YahooWeatherDataConfig implements DataConfig {
 
     @ConfigProperty(name = YahooWeatherDataProperties.YAHOO_WEATHER_APP_ID)
     String yahooAppID;
@@ -16,11 +17,14 @@ public class YahooWeatherDataConfig {
     @ConfigProperty(name = YahooWeatherDataProperties.YAHOO_WEATHER_APP_CONSUMER_SECRET)
     String consumerSecret;
 
+    @ConfigProperty(name = YahooWeatherDataProperties.YAHOO_WEATHER_BASE_URI)
+    String baseUri;
+
     public YahooWeatherDataConfig() {
     }
 
-    public String getBaseURl() {
-        return "https://weather-ydn-yql.media.yahoo.com";
+    public String getBaseUri() {
+        return baseUri;
     }
 
     public String getPath() {
@@ -49,5 +53,13 @@ public class YahooWeatherDataConfig {
 
     public void setConsumerSecret(String consumerSecret) {
         this.consumerSecret = consumerSecret;
+    }
+
+    @Override
+    public boolean isSecureProtocol() {
+        if (baseUri != null) {
+            return baseUri.contains("https");
+        }
+        return  false;
     }
 }

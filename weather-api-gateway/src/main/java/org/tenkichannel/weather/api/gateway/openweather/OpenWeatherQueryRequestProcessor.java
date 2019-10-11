@@ -11,12 +11,11 @@ import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tenkichannel.weather.api.gateway.domain.Location;
-import org.tenkichannel.weather.api.gateway.openweather.OpenWeatherDataConfig;
 
 @ApplicationScoped
-public class QueryRequestProcessor implements Processor {
+public class OpenWeatherQueryRequestProcessor implements Processor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(QueryRequestProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpenWeatherQueryRequestProcessor.class);
 
     @Inject
     OpenWeatherDataConfig config;

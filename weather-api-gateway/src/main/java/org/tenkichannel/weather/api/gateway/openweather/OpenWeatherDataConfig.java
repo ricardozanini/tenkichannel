@@ -1,11 +1,13 @@
 package org.tenkichannel.weather.api.gateway.openweather;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.xml.crypto.Data;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.tenkichannel.weather.api.gateway.DataConfig;
 
 @ApplicationScoped
-public class OpenWeatherDataConfig {
+public class OpenWeatherDataConfig implements DataConfig {
 
     public static final String OPEN_WEATHER_MAP_WEATHER_PATH = "/data/2.5/weather?";
 

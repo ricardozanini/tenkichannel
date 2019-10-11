@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tenkichannel.weather.api.gateway.domain.Location;
 
+import static org.apache.camel.language.constant.ConstantLanguage.constant;
+
 @ApplicationScoped
 public class YahooQueryRequestProcessor implements Processor {
 
@@ -38,7 +40,7 @@ public class YahooQueryRequestProcessor implements Processor {
 
         String locationNormalized = normalize(location.getCity());
 
-        //exchange.getIn().setHeader(Exchange.HTTP_METHOD, constant("GET"));
+        exchange.getIn().setHeader(Exchange.HTTP_METHOD, constant("GET"));
         exchange.getIn().setHeader(Exchange.HTTP_QUERY, generateQuery(location));
         exchange.getIn().setHeader(Exchange.CONTENT_TYPE, "application/json");
         exchange.getIn().setHeader("X-Yahoo-App-Id", config.getYahooAppID());
@@ -114,7 +116,7 @@ public class YahooQueryRequestProcessor implements Processor {
         String signatureString = null;
         try {
             signatureString = "GET&" +
-                    URLEncoder.encode(config.getBaseURl() + "" + config.getPath(), "UTF-8") + "&" +
+                    URLEncoder.encode(config.getBaseUri() + "" + config.getPath(), "UTF-8") + "&" +
                     URLEncoder.encode(parametersList.toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

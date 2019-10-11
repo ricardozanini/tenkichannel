@@ -20,16 +20,16 @@ import org.tenkichannel.weather.api.gateway.openweather.model.Current;
  * Bind to the exchange a {@link Weather} object.
  */
 @ApplicationScoped
-public class CurrentResponseProcessor implements Processor {
+public class OpenWeatherCurrentResponseProcessor implements Processor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CurrentResponseProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpenWeatherCurrentResponseProcessor.class);
 
     @Inject
     ObjectMapper mapper;
 
     ObjectReader reader;
 
-    public CurrentResponseProcessor() {
+    public OpenWeatherCurrentResponseProcessor() {
 
     }
 
