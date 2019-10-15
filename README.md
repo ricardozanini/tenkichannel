@@ -1,3 +1,5 @@
+# :warning: The master branch is unstable. Please use [v1.0.0](https://github.com/ricardozanini/tenkichannel/tree/v1.0.0) instead if you plan to build the demo sources.
+
 # Tenki (天気) Channel :cloud:
 
 Tenki Channel is a tech demo that puts [Kogito](https://kogito.kie.org/), [Camel](https://kogito.kie.org/), [Quarkus](https://kogito.kie.org/) and OpenShift together to showcase some examples using those components.
