@@ -13,11 +13,10 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- deps -->
-    <version.org.kie.kogito>0.4.0</version.org.kie.kogito>
     <!-- update this version when Camel update theirs -->
-    <version.io.quarkus>0.22.0</version.io.quarkus>
+    <version.io.quarkus>0.23.2</version.io.quarkus>
     <!-- must follow kogito -->
+    <version.org.kie.kogito>0.4.0</version.org.kie.kogito>
     <version.com.squareup.okhttp3>3.12.0</version.com.squareup.okhttp3>
     <!-- plugins -->
     <version.maven.failsafe.plugin>3.0.0-M3</version.maven.failsafe.plugin>
@@ -63,13 +62,6 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-bom</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>com.squareup.okhttp3</groupId>
         <artifactId>mockwebserver</artifactId>
         <version>${version.com.squareup.okhttp3}</version>
@@ -81,44 +73,9 @@
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-jsonb</artifactId>
+      <artifactId>quarkus-kogito</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-api</artifactId>
-      <version>${version.org.kie.kogito}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-core-static</artifactId>
-      <version>${version.org.kie.kogito}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-core</artifactId>
-      <version>${version.org.kie.kogito}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-compiler</artifactId>
-      <version>${version.org.kie.kogito}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-canonical-model</artifactId>
-      <version>${version.org.kie.kogito}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>drools-model-compiler</artifactId>
-      <version>${version.org.kie.kogito}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>jbpm-flow</artifactId>
-      <version>${version.org.kie.kogito}</version>
-    </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>process-management-addon</artifactId>
@@ -159,39 +116,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-maven-plugin</artifactId>
-        <version>${version.org.kie.kogito}</version>
-        <extensions>true</extensions>
-      </plugin>
-      <plugin>
-        <groupId>io.openapitools.swagger</groupId>
-        <artifactId>swagger-maven-plugin</artifactId>
-        <version>${version.swagger.maven.plugin}</version>
-        <configuration>
-          <resourcePackages>
-            <resourcePackage>org.tenkichannel.forecast.rain</resourcePackage>
-          </resourcePackages>
-          <outputDirectory>${basedir}/target/classes/META-INF/resources/docs/</outputDirectory>
-          <outputFilename>swagger</outputFilename>
-          <outputFormats>JSON,YAML</outputFormats>
-          <prettyPrint>true</prettyPrint>
-          <swaggerConfig>
-            <info>
-              <title>${project.description}</title>
-              <version>${project.version}</version>
-            </info>
-          </swaggerConfig>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
