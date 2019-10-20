@@ -52,7 +52,7 @@ public class YahooQueryRequestProcessor implements Processor {
     private String generateQuery(final Location location) {
         final StringBuilder sb = new StringBuilder();
 
-        if (null != location.getCity() || !location.getCity().isEmpty()) {
+        if (null != location.getCity() && !location.getCity().isEmpty()) {
             String normalizedLocation = normalize(location.getCity());
             sb.append("location=").append(normalizedLocation);
         } else if (location.getCityId() > 0) {
@@ -73,6 +73,10 @@ public class YahooQueryRequestProcessor implements Processor {
      * @return encoded param
      */
     private String normalize(String param) {
+        if (param == null) {
+            return "";
+        }
+
         String normalized = Normalizer.normalize(param, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
         normalized = normalized.replace("\"", "").replace(" ", "+");
         try {

@@ -1,20 +1,8 @@
 package org.tenkichannel.weather.api.gateway.routes;
 
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import org.apache.camel.SSLContextParametersAware;
-import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.quarkus.core.runtime.CamelRuntime;
 import org.apache.camel.quarkus.core.runtime.StartingEvent;
 import org.apache.camel.support.jsse.SSLContextParameters;
@@ -24,11 +12,20 @@ import org.slf4j.LoggerFactory;
 import org.tenkichannel.weather.api.gateway.openweather.OpenWeatherDataConfig;
 import org.tenkichannel.weather.api.gateway.yahooweather.YahooWeatherDataConfig;
 
-@ApplicationScoped
-public class WeatherGatewayRouteFactory {
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 
-    public static final String WEATHER_ROUTE = "direct:getWeatherData";
-    private static final Logger LOGGER = LoggerFactory.getLogger(WeatherGatewayRouteFactory.class);
+@ApplicationScoped
+public class CamelLifecycle {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WeatherGatewayRoute.class);
 
     @Inject
     CamelRuntime runtime;
@@ -40,12 +37,18 @@ public class WeatherGatewayRouteFactory {
     YahooWeatherRoute yahooWeather;
 
     @Inject
+    WeatherGatewayRoute gatewayRoute;
+
+    @Inject
     OpenWeatherDataConfig openWeatherDataConfig;
 
     @Inject
     YahooWeatherDataConfig yahooWeatherDataConfig;
 
     public void onStarting(@Observes StartingEvent event) throws Exception {
+        LOGGER.debug("Configuration set for Open Weather: {}", openWeatherDataConfig);
+        LOGGER.debug("Configuration set for Yahoo Weather: {}", yahooWeatherDataConfig);
+
         LOGGER.debug("Starting Camel Runtime");
         runtime.addProperty("starting", "true");
         // tls configuration
@@ -54,12 +57,14 @@ public class WeatherGatewayRouteFactory {
             this.configureDefaultSslContextParameters();
         }
         LOGGER.debug("Adding route to Camel Context");
-        runtime.getContext().addRoutes(getWeatherRoute());
-        runtime.getContext().addRoutes(openWeather);
-        runtime.getContext().addRoutes(yahooWeather);
+        // Camel extension is not playing nicely with Quarkus. If we implement RouteBuilder in the class, the beans that we need to be inject, won't be.
+        // that's why we're relying on the getRoute() method
+        runtime.getContext().addRoutes(openWeather.getRoute());
+        runtime.getContext().addRoutes(yahooWeather.getRoute());
+        runtime.getContext().addRoutes(gatewayRoute.getRoute());
     }
 
-    void onStart(@Observes StartupEvent ev) throws Exception {
+    void onStart(@Observes StartupEvent ev) {
         runtime.addProperty("started", "true");
         LOGGER.info("Camel Runtime started");
     }
@@ -70,7 +75,6 @@ public class WeatherGatewayRouteFactory {
 
     /**
      * Add the default TrustStore to the CamelContext
-     * @return
      * @throws NoSuchAlgorithmException
      * @throws KeyStoreException
      * @see <a href="https://livebook.manning.com/#!/book/camel-in-action-second-edition/chapter-14/220">Defining global SSL configuration</a>
@@ -96,18 +100,5 @@ public class WeatherGatewayRouteFactory {
         ((SSLContextParametersAware) this.runtime.getContext().getComponent("netty-http")).setUseGlobalSslContextParameters(true);
     }
 
-    private RouteBuilder getWeatherRoute() {
-        return new RouteBuilder() {
-            @Override
-            public void configure() throws Exception {
-                // @formatter:off
-                from(WEATHER_ROUTE)
-                        .loadBalance()
-                        .roundRobin()
-                        .to(openWeather.ROUTE_OPEN_WEATHER_DATA)
-                        .to(yahooWeather.ROUTE_YAHOO_WEATHER_DATA);
-                // @formatter:on
-            }
-        };
-    }
 }
+

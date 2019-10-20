@@ -6,6 +6,8 @@ import javax.xml.crypto.Data;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.tenkichannel.weather.api.gateway.DataConfig;
 
+import java.util.Objects;
+
 @ApplicationScoped
 public class OpenWeatherDataConfig implements DataConfig {
 
@@ -41,5 +43,10 @@ public class OpenWeatherDataConfig implements DataConfig {
             return baseUri.contains("https");
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toString(this.baseUri);
     }
 }

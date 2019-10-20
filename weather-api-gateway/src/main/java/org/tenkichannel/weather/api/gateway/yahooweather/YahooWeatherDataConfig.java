@@ -4,6 +4,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.tenkichannel.weather.api.gateway.DataConfig;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.Objects;
 
 @ApplicationScoped
 public class YahooWeatherDataConfig implements DataConfig {
@@ -61,5 +62,10 @@ public class YahooWeatherDataConfig implements DataConfig {
             return baseUri.contains("https");
         }
         return  false;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toString(this.baseUri);
     }
 }

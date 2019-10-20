@@ -18,19 +18,17 @@ import org.tenkichannel.weather.api.gateway.yahooweather.model.YahooQueryRespons
 @ApplicationScoped
 public class YahooCurrentResponseProcessor implements Processor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(YahooCurrentResponseProcessor.class);
 
     @Inject
-    ObjectMapper mapper;
-
-    ObjectReader reader;
+    ObjectMapper reader;
 
     @Override
     public void process(Exchange exchange) throws Exception {
         LOGGER.debug("Starting to handle response from server");
         final String weatherDataJson = exchange.getIn().getBody(String.class);
         LOGGER.debug("Weather data dump: {}", weatherDataJson);
-        final YahooQueryResponse response = reader.forType(YahooQueryResponse.class).readValue(weatherDataJson);
+        final YahooQueryResponse response = reader.readerFor(YahooQueryResponse.class).readValue(weatherDataJson);
         final Weather weather = new Weather();
 
         try {
