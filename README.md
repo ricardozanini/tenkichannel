@@ -1,58 +1,11 @@
+# :warning: The master branch is [unstable](https://github.com/ricardozanini/tenkichannel/issues/10). Please use [v1.0.0](https://github.com/ricardozanini/tenkichannel/tree/v1.0.0) instead if you plan to build the demo sources.
+
 # Tenki (天気) Channel :cloud:
 
 Tenki Channel is a tech demo that puts [Kogito](https://kogito.kie.org/), [Camel](https://kogito.kie.org/), [Quarkus](https://kogito.kie.org/) and OpenShift together to showcase some examples using those components.
 
 Tenki (天気) in Japanese means _weather_. :-D
 
-# TLDR
-
-- Works on OCP 3.11 and 4.x.
-- Requires deploy of three pieces: two back-end services (kogito and camel) and one front-end UI.
-- Requires a free account at [openweathermap](https://openweathermap.org/api). Grab your API Key to use on the demo deployment.
-- Quickest way to have this demo up and running is to deploy on Openshift using the provided templates. You won't have the full experience though. Or, you can have the experience of deploying it with Kogito Operator (or using the Kogito CLI).
-
-## TLDR Deploy back-end via template
-
-```bash
-# clone this repo
-$ git clone https://github.com/ricardozanini/tenkichannel.git
-$ cd tenkichannel
-$ oc new-project tenkichannel
-$ oc create -f openshift/rain-forecast/templates/rain-forecast-backend.yaml
-# grab your API key on https://openweathermap.org/api
-$ oc new-app --template=rain-forecast-demo -p NAMESPACE=tenkichannel -p OPENWEATHER_API_KEY=<your-api-key>
-# create the UI template
-$ oc create -f openshift/rain-forecast/templates/rain-forecast-ui.yaml
-```
-
-## TLDR Deploy back-end (using Kogito Operator)
-
-Install [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) and then:
-
-```bash
-# clone this repo
-$ git clone https://github.com/ricardozanini/tenkichannel.git
-$ oc new-project tenkichannel
-# Deploy Kogito App
-$ oc create -f openshift/rain-forecast/operator/rain-forecast-kogitoapp.yaml
-# Deploy Camel Service (REPLACE YOUR OPENWEATHER KEY)
-$ oc new-app https://github.com/ricardozanini/tenkichannel --name=weather-api-gateway --context-dir=weather-api-gateway -e JAVA_OPTIONS="-Dorg.tenkichannel.weather.api.gateway.openweathermap.api_key=<your_api_key>" --docker-image=docker.io/fabric8/s2i-java:latest-java11 -l forecast=service
-```
-
-## TLDR; Deploy front-end
-
-Set the BACKEND_ROUTE variable with the route of your rain-forecast service i.e. https://rain-forecast-tenkichannel.apps.your-cluster.com
-
-```
-# create the UI template
-$ oc create -f openshift/rain-forecast/templates/rain-forecast-ui.yaml
-# create the UI application using as parameter the rain-forecast route that were generated in the above section
-$ oc new-app --template=rain-forecast-demo-ui -p BACKEND_ROUTE=<service-route>
-```
-
-Access the front-end application using its route. 
-
-# Detailed Instructions
 
 ## Rain Forecast - Is it gonna rain? :umbrella:
 
@@ -66,24 +19,60 @@ Both back-end services are backed by the Quarkus framework. This means that you 
 
 There is also a front-end UI which displays in a friendly way for users and shows one possible to consume the back-end services.
 
-## Main Pre-reqs
+### Quickstart
+
+- Works on OCP 3.11 and 4.x.
+- Requires deploy of three pieces: two back-end services (kogito and camel) and one front-end UI.
+- Requires a free account at [openweathermap](https://openweathermap.org/api). Grab your API Key to use on the demo deployment.
+- Quickest way to have this demo up and running is to deploy on Openshift using the provided templates. You won't have the full experience though. Or, you can have the experience of deploying it with Kogito Operator (or using the Kogito CLI).
+
+#### Deploy the back-end via template
+
+```bash
+# clone this repo
+$ git clone https://github.com/ricardozanini/tenkichannel.git
+$ cd tenkichannel
+$ oc new-project tenkichannel
+$ oc create -f openshift/rain-forecast/templates/rain-forecast-backend.yaml
+# grab your API key on https://openweathermap.org/api
+$ oc new-app --template=rain-forecast-demo-backend -p NAMESPACE=tenkichannel -p OPENWEATHER_API_KEY=<your-api-key>
+# create the UI template
+$ oc create -f openshift/rain-forecast/templates/rain-forecast-ui.yaml
+```
+
+#### Deploy the back-end with Kogito Operator
+
+Install [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) and then:
+
+```bash
+# clone this repo
+$ git clone https://github.com/ricardozanini/tenkichannel.git
+$ oc new-project tenkichannel
+# Deploy Kogito App
+$ oc create -f openshift/rain-forecast/operator/rain-forecast-kogitoapp.yaml
+# Deploy Camel Service (REPLACE YOUR OPENWEATHER KEY)
+$ oc new-app https://github.com/ricardozanini/tenkichannel --name=weather-api-gateway --context-dir=weather-api-gateway -e JAVA_OPTIONS="-Dorg.tenkichannel.weather.api.gateway.openweathermap.api_key=<your_api_key>" --docker-image=docker.io/fabric8/s2i-java:latest-java11 -l forecast=service
+```
+
+#### Deploy the front-end
+
+Set the BACKEND_ROUTE variable with the route of your rain-forecast service i.e. https://rain-forecast-tenkichannel.apps.your-cluster.com
+
+```
+# create the UI template
+$ oc create -f openshift/rain-forecast/templates/rain-forecast-ui.yaml
+# create the UI application using as parameter the rain-forecast route that were generated in the above section
+$ oc new-app --template=rain-forecast-demo-ui -p BACKEND_ROUTE=<service-route>
+```
+
+Access the front-end application using its route. 
+
+### Detailed Instructions
+
+#### Main Pre-reqs
 
 1. You need to create a free account on [openweathermap](https://openweathermap.org/api), login and copy the API Key to use on the demo deployment;
 2. oc client available (in case you want to deploy on [Openshift](https://docs.openshift.com/container-platform/4.1/welcome/index.html));
-
-### Running  locally
-
-To make both Kogito and Camel services work locally, read the guides ([here](rain-forecast-process) and [here](weather-api-gateway)) and have both services up and running. You should call the Rain Forecast Process at the `rainforecast` endpoint to see it in action. 
-
-### Deploying on OpenShift ⭕️
-
-You should either use templates OR the [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) to deploy the Rain Forecast Application. 
-
-* Deploy using templates: The quicker method to have the demo up and running. It takes the pre built images from Quay and deploy them into your cluster.
-
-* Deploy using Kogito Operator: Experience how it is to deploy and use the Kogito Operator to deliver an application. It builds the application for you from this master branch. It's worth taking a look to get your hands dirty on the operator way of doing things on OpenShift.
-
-This demo runs on OCP 3.11 and 4.x.
 
 #### Open Weather API
 
@@ -93,7 +82,21 @@ You will need an API Key on Open Weather. To get it follow these steps:
 
 ![](docs/img/apikey.png)
 
-#### Option 1: Using Templates
+#### Running locally
+
+To make both Kogito and Camel services work locally, read the guides ([here](rain-forecast-process) and [here](weather-api-gateway)) and have both services up and running. You should call the Rain Forecast Process at the `rainforecast` endpoint to see it in action. 
+
+#### Deploying on OpenShift ⭕️
+
+You should either use templates OR the [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) to deploy the Rain Forecast Application. 
+
+* Deploy using templates: The quicker method to have the demo up and running. It takes the pre built images from Quay and deploy them into your cluster.
+
+* Deploy using Kogito Operator: Experience how it is to deploy and use the Kogito Operator to deliver an application. It builds the application for you from this master branch. It's worth taking a look to get your hands dirty on the operator way of doing things on OpenShift.
+
+This demo runs on OCP 3.11 and 4.x.
+
+##### Option 1: Using Templates
 
 To deploy the Rain Forecast demo on your OpenShift cluster, follow these steps:
 
@@ -104,7 +107,7 @@ $ cd tenkichannel
 $ oc new-project tenkichannel
 $ oc create -f openshift/rain-forecast/templates/rain-forecast-backend.yaml
 # grab your API key on https://openweathermap.org/api
-$ oc new-app --template=rain-forecast-demo -p NAMESPACE=tenkichannel -p OPENWEATHER_API_KEY=<your-api-key>
+$ oc new-app --template=rain-forecast-demo-backend -p NAMESPACE=tenkichannel -p OPENWEATHER_API_KEY=<your-api-key>
 ```
 
 Then, you can see the route to access the process:
@@ -120,7 +123,7 @@ You can see your service swagger api running i.e. at <rain-forecast-tenkichannel
 
 _See more details about how to use it at the [Rain Forecast README doc](rain-forecast-process/README.md)._
 
-#### Using the Kogito Operator/CLI
+##### Option 2: Using the Kogito Operator/CLI
 
 Deploying using those templates it's easy to get the application working right away since we used pre built images, but in the real world you'll have to build (no pun intended) your way in.
 
@@ -134,7 +137,7 @@ $ oc new-project tenkichannel
 $ oc create -f openshift/rain-forecast/operator/rain-forecast-kogitoapp.yaml
 ```
 
-##### Using Kogito CLI
+###### Using Kogito CLI
 
 If you're feeling lazy, let the [Kogito CLI](https://github.com/kiegroup/kogito-cloud-operator#kogito-cli) deploy the operator (only on 0.5.0+ versions) and the application for you.
 
@@ -159,7 +162,7 @@ $ oc describe kogitoapp/rain-forecast | grep Route:
 $ oc new-app https://github.com/ricardozanini/tenkichannel --name=weather-api-gateway --context-dir=weather-api-gateway -e JAVA_OPTIONS="-Dorg.tenkichannel.weather.api.gateway.openweathermap.api_key=<your_api_key>" --docker-image=docker.io/fabric8/s2i-java:latest-java11 -l forecast=service
 ```
 
-#### Deploying the User Interface
+##### Deploying the User Interface
 
 No matter the way you decided to deploy the Rain Forecast application backend services, you can use the UI to have the full demo experience. After installing the backend and playing with the API, it's time to have some fun with the UI. 
 
