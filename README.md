@@ -1,4 +1,4 @@
-# :warning: The master branch is unstable. Please use [v1.0.0](https://github.com/ricardozanini/tenkichannel/tree/v1.0.0) instead if you plan to build the demo sources.
+# :warning: The master branch is [unstable](https://github.com/ricardozanini/tenkichannel/issues/10). Please use [v1.0.0](https://github.com/ricardozanini/tenkichannel/tree/v1.0.0) instead if you plan to build the demo sources.
 
 # Tenki (天気) Channel :cloud:
 
