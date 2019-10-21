@@ -1,5 +1,6 @@
 package org.tenkichannel.weather.api.gateway.yahooweather;
 
+import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
 import java.net.URLEncoder;
@@ -49,7 +50,7 @@ public class YahooQueryRequestProcessor implements Processor {
         LOGGER.debug("Headers set to {}", exchange.getIn().getHeaders());
     }
 
-    private String generateQuery(final Location location) {
+    String generateQuery(final Location location) {
         final StringBuilder sb = new StringBuilder();
 
         if (null != location.getCity() && !location.getCity().isEmpty()) {
@@ -83,7 +84,7 @@ public class YahooQueryRequestProcessor implements Processor {
             normalized = URLEncoder.encode(normalized, StandardCharsets.UTF_8.displayName());
             LOGGER.debug(String.format("Parameter to encode: [%s], Encoded: [%s]", param, normalized));
         } catch (final Exception e) {
-            LOGGER.debug("Failed to encode " + param);
+            throw new IllegalArgumentException("Failed to encode " + param);
         }
         return normalized;
     }
@@ -123,7 +124,7 @@ public class YahooQueryRequestProcessor implements Processor {
                     URLEncoder.encode(config.getBaseUri() + "" + config.getPath(), "UTF-8") + "&" +
                     URLEncoder.encode(parametersList.toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            throw new UncheckedIOException(e);
         }
 
         String signature = null;
@@ -135,8 +136,7 @@ public class YahooQueryRequestProcessor implements Processor {
             Base64.Encoder encoder = Base64.getEncoder();
             signature = encoder.encodeToString(rawHMAC);
         } catch (Exception e) {
-            System.err.println("Unable to append signature");
-            System.exit(0);
+            throw new IllegalStateException("Unable to append signature");
         }
 
         return "OAuth " +

@@ -54,7 +54,7 @@ public class CamelLifecycle {
         // tls configuration
         if (this.openWeatherDataConfig.isSecureProtocol() || this.yahooWeatherDataConfig.isSecureProtocol()) {
             LOGGER.info("Configuring TLS protocol for {} and {}", openWeatherDataConfig.getBaseUri(), yahooWeatherDataConfig.getBaseUri());
-            this.configureDefaultSslContextParameters();
+            //this.configureDefaultSslContextParameters();
         }
         LOGGER.debug("Adding route to Camel Context");
         // Camel extension is not playing nicely with Quarkus. If we implement RouteBuilder in the class, the beans that we need to be inject, won't be.
