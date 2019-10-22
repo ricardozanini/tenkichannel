@@ -1,5 +1,3 @@
-# :warning: The master branch is [unstable](https://github.com/ricardozanini/tenkichannel/issues/10). Please use [v1.0.0](https://github.com/ricardozanini/tenkichannel/tree/v1.0.0) instead if you plan to build the demo sources.
-
 # Tenki (天気) Channel :cloud:
 
 Tenki Channel is a tech demo that puts [Kogito](https://kogito.kie.org/), [Camel](https://kogito.kie.org/), [Quarkus](https://kogito.kie.org/) and OpenShift together to showcase some examples using those components.
@@ -24,6 +22,7 @@ There is also a front-end UI which displays in a friendly way for users and show
 - Works on OCP 3.11 and 4.x.
 - Requires deploy of three pieces: two back-end services (kogito and camel) and one front-end UI.
 - Requires a free account at [openweathermap](https://openweathermap.org/api). Grab your API Key to use on the demo deployment.
+- Requires a free account at [Yahoo Weather API](https://developer.yahoo.com/weather/documentation.html).
 - Quickest way to have this demo up and running is to deploy on Openshift using the provided templates. You won't have the full experience though. Or, you can have the experience of deploying it with Kogito Operator (or using the Kogito CLI).
 
 #### Deploy the back-end via template
@@ -72,7 +71,8 @@ Access the front-end application using its route.
 #### Main Pre-reqs
 
 1. You need to create a free account on [openweathermap](https://openweathermap.org/api), login and copy the API Key to use on the demo deployment;
-2. oc client available (in case you want to deploy on [Openshift](https://docs.openshift.com/container-platform/4.1/welcome/index.html));
+2. You also need an Yahoo Developer account for the [Yahoo Weather API](https://developer.yahoo.com/weather/documentation.html);
+3. oc client available (in case you want to deploy on [Openshift](https://docs.openshift.com/container-platform/4.1/welcome/index.html));
 
 #### Open Weather API
 
