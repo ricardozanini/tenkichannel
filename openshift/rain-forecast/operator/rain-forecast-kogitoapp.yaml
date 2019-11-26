@@ -8,9 +8,9 @@ spec:
       uri: https://github.com/ricardozanini/tenkichannel 
       contextDir: rain-forecast-process
     imageRuntime:
-      imageStreamTag: 0.4.0
+      imageStreamTag: 0.5.1
     imageS2I:
-      imageStreamTag: 0.4.0
+      imageStreamTag: 0.5.1
   env:
     - name: "NAMESPACE"
       value: tenkichannel

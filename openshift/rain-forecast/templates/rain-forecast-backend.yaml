@@ -14,6 +14,15 @@ parameters:
 - name: OPENWEATHER_API_KEY
   description: "The API key for the openweatherdata.com. Sign in and grab one at https://openweathermap.org/api"
   required: true
+- name: YAHOO_API_ID
+  description: "The API ID for the Yahoo Weather API. Sign in and grab one at https://developer.yahoo.com/apps/"
+  required: true
+- name: YAHOO_CLIENT_ID
+  description: "The Client ID for the Yahoo Weather API"
+  required: true
+- name: YAHOO_CLIENT_SECRET
+  description: "The Client Secret for the Yahoo Weather API"
+  required: true
 - name: NAMESPACE
   description: "Namespace where the demo will be deployed. Used for service discovery"
   required: true
@@ -111,7 +120,10 @@ objects:
         containers:
         - env:
           - name: JAVA_OPTIONS
-            value: -Dorg.tenkichannel.weather.api.gateway.openweathermap.api_key=${OPENWEATHER_API_KEY}
+            value: "-Dorg.tenkichannel.weather.api.gateway.openweathermap.api_key=${OPENWEATHER_API_KEY} 
+            -Dorg.tenkichannel.weather.api.gateway.yahooweather.id=${YAHOO_API_ID} 
+            -Dorg.tenkichannel.weather.api.gateway.yahooweather.consumerKey=${YAHOO_CLIENT_ID} 
+            -Dorg.tenkichannel.weather.api.gateway.yahooweather.consumerSecret=${YAHOO_CLIENT_SECRET}"
           image: quay.io/ricardozanini/weather-api-gateway:latest
           imagePullPolicy: Always
           name: weather-api-gateway

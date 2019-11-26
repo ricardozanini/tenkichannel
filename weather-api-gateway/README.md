@@ -3,7 +3,7 @@
 ## Usage
 
 1. Get an API Key at the [OpenWeather API web site](https://openweathermap.org/api)
-2. Get an Yahoo credential from [Yahoo Weather API](https://developer.yahoo.com/weather/documentation.html)
+2. Get an Yahoo credential from [Yahoo Weather API](https://developer.yahoo.com/apps/)
 3. Run:
 
 ```bash
@@ -14,4 +14,4 @@ $ mvn clean package quarkus:dev -Dquarkus.http.port=8081 -Dorg.tenkichannel.weat
 -DskipTests
 ```
 
-Enjoy the app at: [http://localhost:8080/swagger-ui/](http://localhost:8081/swagger-ui/).
+Enjoy the app at: [http://localhost:8081/swagger-ui/](http://localhost:8081/swagger-ui/).

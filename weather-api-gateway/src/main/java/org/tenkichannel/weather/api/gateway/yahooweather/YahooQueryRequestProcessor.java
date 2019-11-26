@@ -1,5 +1,15 @@
 package org.tenkichannel.weather.api.gateway.yahooweather;
 
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.tenkichannel.weather.api.gateway.domain.Location;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
@@ -10,19 +20,11 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.tenkichannel.weather.api.gateway.domain.Location;
+import java.util.stream.Collectors;
 
 import static org.apache.camel.language.constant.ConstantLanguage.constant;
 
@@ -39,37 +41,38 @@ public class YahooQueryRequestProcessor implements Processor {
         final Location location = exchange.getIn().getBody(Location.class);
         LOGGER.debug("Preparing to set input location into exchange: {}", location);
 
-        String locationNormalized = normalize(location.getCity());
+        final Map<String, String> query = generateQuery(location);
 
         exchange.getIn().setHeader(Exchange.HTTP_METHOD, constant("GET"));
-        exchange.getIn().setHeader(Exchange.HTTP_QUERY, generateQuery(location));
+        exchange.getIn().setHeader(Exchange.HTTP_QUERY,
+                query.entrySet()
+                        .stream()
+                        .map(entry -> String.join("=", entry.getKey(), entry.getValue()))
+                        .collect(Collectors.joining("&")));
         exchange.getIn().setHeader(Exchange.CONTENT_TYPE, "application/json");
         exchange.getIn().setHeader("X-Yahoo-App-Id", config.getYahooAppID());
-        exchange.getIn().setHeader("Authorization", prepareAuthorization(locationNormalized));
+        exchange.getIn().setHeader("Authorization", prepareAuthorization(query));
 
         LOGGER.debug("Headers set to {}", exchange.getIn().getHeaders());
     }
 
-    String generateQuery(final Location location) {
-        final StringBuilder sb = new StringBuilder();
-
+    Map<String, String> generateQuery(final Location location) {
+        final Map<String, String> query = new HashMap<>();
         if (null != location.getCity() && !location.getCity().isEmpty()) {
-            String normalizedLocation = normalize(location.getCity());
-            sb.append("location=").append(normalizedLocation);
+            query.put("location", normalize(location.getCity()));
         } else if (location.getCityId() > 0) {
-            sb.append("woeid=").append(location.getCityId());
+            query.put("woeid", location.getCityId().toString());
         } else if (null != location.getLatitude() && null != location.getLongitude()) {
-            sb.append("lat=")
-                    .append(location.getLatitude())
-                    .append("&lon=")
-                    .append(location.getLongitude());
+            query.put("lat", location.getLatitude().toString());
+            query.put("lon", location.getLongitude().toString());
         }
-        sb.append("&format=json");
-        return sb.toString();
+        query.put("format", "json");
+        return query;
     }
 
     /**
      * Normalize the parameter and remove accents
+     *
      * @param param
      * @return encoded param
      */
@@ -91,10 +94,11 @@ public class YahooQueryRequestProcessor implements Processor {
 
     /**
      * Prepare the Oauth Authorization Header
-     * @param location
+     *
+     * @param queryParameters key, value map representation of query parameters to Yahoo API
      * @return Authorization Oauth 1.0
      */
-    public String prepareAuthorization(String location) {
+    public String prepareAuthorization(final Map<String, String> queryParameters) {
 
         long timestamp = new Date().getTime() / 1000;
         byte[] nonce = new byte[32];
@@ -108,9 +112,7 @@ public class YahooQueryRequestProcessor implements Processor {
         parameters.add("oauth_signature_method=HMAC-SHA1");
         parameters.add("oauth_timestamp=" + timestamp);
         parameters.add("oauth_version=1.0");
-        // Make sure value is encoded
-        parameters.add("location=" + location);
-        parameters.add("format=json");
+        queryParameters.entrySet().stream().forEach(q -> parameters.add(String.format("%s=%s", q.getKey(), q.getValue())));
         Collections.sort(parameters);
 
         StringBuffer parametersList = new StringBuffer();
