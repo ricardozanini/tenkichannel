@@ -1,5 +1,6 @@
-FROM quay.io/kiegroup/kogito-quarkus-ubi8:0.4.0
+FROM quay.io/kiegroup/kogito-quarkus-ubi8:0.5.1
 
 LABEL maintainer="Ricardo Zanini <ricardozanini@gmail.com>"
 
-COPY target/rain-forecast-process-1.0.0-SNAPSHOT-runner /home/kogito/bin/rain-forecast-process-1.0.0-SNAPSHOT-runner
+RUN mkdir -p /home/kogito/bin/ && chown -R kogito:kogito /home/kogito/bin/
+COPY target/rain-forecast-process-1.1.0-runner /home/kogito/bin/rain-forecast-process-1.1.0-runner

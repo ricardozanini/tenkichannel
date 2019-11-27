@@ -22,8 +22,8 @@ There is also a front-end UI which displays in a friendly way for users and show
 - Works on OCP 3.11 and 4.x.
 - Requires deploy of three pieces: two back-end services (kogito and camel) and one front-end UI.
 - Requires a free account at [openweathermap](https://openweathermap.org/api). Grab your API Key to use on the demo deployment.
-- Requires a free account at [Yahoo Weather API](https://developer.yahoo.com/weather/documentation.html).
-- Quickest way to have this demo up and running is to deploy on Openshift using the provided templates. You won't have the full experience though. Or, you can have the experience of deploying it with Kogito Operator (or using the Kogito CLI).
+- Requires a free account at [Yahoo Weather API](https://developer.yahoo.com/apps/). Add a new application in the Yahoo Developer portal to grab your keys.
+- Quickest way to have this demo up and running is to deploy on OpenShift using the provided templates. You won't have the full experience though. Or, you can have the experience of deploying it with Kogito Operator (or using the Kogito CLI).
 
 #### Deploy the back-end via template
 
@@ -34,9 +34,11 @@ $ cd tenkichannel
 $ oc new-project tenkichannel
 $ oc create -f openshift/rain-forecast/templates/rain-forecast-backend.yaml
 # grab your API key on https://openweathermap.org/api
-$ oc new-app --template=rain-forecast-demo-backend -p NAMESPACE=tenkichannel -p OPENWEATHER_API_KEY=<your-api-key>
+$ oc new-app --template=rain-forecast-demo-backend -p NAMESPACE=tenkichannel -p OPENWEATHER_API_KEY=<your-api-key> -p YAHOO_API_ID=<your-id> -p YAHOO_CLIENT_ID=<client-id> -p YAHOO_CLIENT_SECRET=<client-secret>
 # create the UI template
 $ oc create -f openshift/rain-forecast/templates/rain-forecast-ui.yaml
+# create the UI application using as parameter the rain-forecast route that were generated in the above section
+$ oc new-app --template=rain-forecast-demo-ui -p BACKEND_ROUTE=<service-route>
 ```
 
 #### Deploy the back-end with Kogito Operator
@@ -49,13 +51,13 @@ $ git clone https://github.com/ricardozanini/tenkichannel.git
 $ oc new-project tenkichannel
 # Deploy Kogito App
 $ oc create -f openshift/rain-forecast/operator/rain-forecast-kogitoapp.yaml
-# Deploy Camel Service (REPLACE YOUR OPENWEATHER KEY)
-$ oc new-app https://github.com/ricardozanini/tenkichannel --name=weather-api-gateway --context-dir=weather-api-gateway -e JAVA_OPTIONS="-Dorg.tenkichannel.weather.api.gateway.openweathermap.api_key=<your_api_key>" --docker-image=docker.io/fabric8/s2i-java:latest-java11 -l forecast=service
+# Deploy Camel Service (REPLACE YOUR KEYS!!!!)
+$ oc new-app https://github.com/ricardozanini/tenkichannel --name=weather-api-gateway --context-dir=weather-api-gateway -e JAVA_OPTIONS="-Dorg.tenkichannel.weather.api.gateway.openweathermap.api_key=<your_api_key> -Dorg.tenkichannel.weather.api.gateway.yahooweather.id=<yahoo_api_id> -Dorg.tenkichannel.weather.api.gateway.yahooweather.consumerKey=<yahoo_consumer_key> -Dorg.tenkichannel.weather.api.gateway.yahooweather.consumerSecret=<yahoo_consume_secret>" --docker-image=docker.io/fabric8/s2i-java:latest-java11 -l forecast=service
 ```
 
 #### Deploy the front-end
 
-Set the BACKEND_ROUTE variable with the route of your rain-forecast service i.e. https://rain-forecast-tenkichannel.apps.your-cluster.com
+Set the BACKEND_ROUTE variable with the route of your rain-forecast service i.e. https://rain-forecast-tenkichannel.apps.your-cluster.com (please remove the last backslash)
 
 ```
 # create the UI template
@@ -107,7 +109,7 @@ $ cd tenkichannel
 $ oc new-project tenkichannel
 $ oc create -f openshift/rain-forecast/templates/rain-forecast-backend.yaml
 # grab your API key on https://openweathermap.org/api
-$ oc new-app --template=rain-forecast-demo-backend -p NAMESPACE=tenkichannel -p OPENWEATHER_API_KEY=<your-api-key>
+$ oc new-app --template=rain-forecast-demo-backend -p NAMESPACE=tenkichannel -p OPENWEATHER_API_KEY=<your-api-key> -p YAHOO_API_ID=<your-id> -p YAHOO_CLIENT_ID=<client-id> -p YAHOO_CLIENT_SECRET=<client-secret>
 ```
 
 Then, you can see the route to access the process:
@@ -159,7 +161,7 @@ $ oc describe kogitoapp/rain-forecast | grep Route:
 4. Use the `new-app` command from `oc` client to deploy camel service. (The Weather API Gateway is not a Kogito Service, so you can't use the operator to deploy it. Instead, u)
 
 ```bash
-$ oc new-app https://github.com/ricardozanini/tenkichannel --name=weather-api-gateway --context-dir=weather-api-gateway -e JAVA_OPTIONS="-Dorg.tenkichannel.weather.api.gateway.openweathermap.api_key=<your_api_key>" --docker-image=docker.io/fabric8/s2i-java:latest-java11 -l forecast=service
+$ oc new-app https://github.com/ricardozanini/tenkichannel --name=weather-api-gateway --context-dir=weather-api-gateway -e JAVA_OPTIONS="-Dorg.tenkichannel.weather.api.gateway.openweathermap.api_key=<your_api_key> -Dorg.tenkichannel.weather.api.gateway.yahooweather.id=<yahoo_api_id> -Dorg.tenkichannel.weather.api.gateway.yahooweather.consumerKey=<yahoo_consumer_key> -Dorg.tenkichannel.weather.api.gateway.yahooweather.consumerSecret=<yahoo_consume_secret>" --docker-image=docker.io/fabric8/s2i-java:latest-java11 -l forecast=service
 ```
 
 ##### Deploying the User Interface

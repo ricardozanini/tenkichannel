@@ -1,19 +1,15 @@
 package org.tenkichannel.weather.api.gateway.yahooweather;
 
-import io.quarkus.test.junit.QuarkusTest;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Request;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.tenkichannel.weather.api.gateway.domain.Location;
 
-import javax.inject.Inject;
-
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * This test is meant to verify the Yahoo Service and should not run under normal circumstances.
@@ -34,8 +30,8 @@ public class YahooQueryRequestProcessorIT {
         config.consumerSecret = "";
         requestProcessor.config = config;
 
-        final String query = requestProcessor.generateQuery(location);
-        final String authorization = requestProcessor.prepareAuthorization(location.getCity());
+        final Map<String, String> query = requestProcessor.generateQuery(location);
+        final String authorization = requestProcessor.prepareAuthorization(query);
 
         final String content = Request.Get(URI.create(config.baseUri + config.getPath() + "?" + query))
                 .addHeader("Authorization", authorization)
