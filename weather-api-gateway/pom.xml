@@ -22,7 +22,7 @@
         <version.swagger.maven.plugin>2.1.0</version.swagger.maven.plugin>
         <version.surefire.plugin>3.0.0-M3</version.surefire.plugin>
         <!-- test -->
-        <org.apache.httpclient.version>4.5.10</org.apache.httpclient.version>
+        <org.apache.httpclient.version>4.5.13</org.apache.httpclient.version>
     </properties>
 
     <repositories>
